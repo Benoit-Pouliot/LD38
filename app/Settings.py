@@ -41,15 +41,8 @@ MOUSE_LEFT = 1
 MOUSE_RIGHT = 3
 
 #Scenes self.nextScene commands, used to tell SceneHandler what next scene to run after this one ends
-TITLE_SCREEN = 0
-SHOP_SCREEN = 1
-INSTRUCTION_SCREEN = 911
-CREDIT_SCREEN = 811
-WIN_SCREEN = 3
-GAME_OVER_SCREEN = 4
-CREDIT_SCREEN = 5
-
-PLATFORM_SCREEN = 42
+TITLE_SCENE = 0
+GAME_SCENE = 1
 
 # Sprite Layer
 SPRITE_LAYER = 4
