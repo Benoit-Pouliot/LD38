@@ -3,25 +3,38 @@ import pytmx
 import pygame
 import os
 import weakref
+import logging
 
 from app.settings import *
 from app.sprites.Player import Player
 from app.sprites.Shop import Shop
 from app.sprites.GUI.HUD import HUD
+from app.scene.gameScene.TmxData import TmxData
 
 class GameSceneData:
     def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld",screenSize=(SCREEN_WIDTH,SCREEN_HEIGHT)):
         self.nextScene = None
         self.notifySet = weakref.WeakSet()
 
-        # DEBUT MAP DATA
-
+        # Beginning MAP DATA
         self.nameMap = mapName
+
+        # A set-up to shut down the logger 'orthographic' in pyscroll
+        logger = logging.getLogger('orthographic')
+        logger.setLevel(logging.ERROR)
 
         self.tmxData = pytmx.util_pygame.load_pygame(self.reqImageName(self.nameMap))
         self.tiledMapData = pyscroll.data.TiledMapData(self.tmxData)
         self.cameraPlayer = pyscroll.BufferedRenderer(self.tiledMapData, screenSize, clamp_camera=True)
         # self.soundController = soundPlayerController()
+
+        # Local TmxData : Usefull to modify the tmxData
+        self.localTmxData = TmxData(self.tmxData)
+
+        if TAG_BP:
+            self.localTmxData.addTileXYToListToChange((5*32,27*32), 0, 2)
+            self.localTmxData.addTileXYToListToChange((6*32,27*32), 0, 'Terrain_TL')
+            self.localTmxData.changeAllTileInList(self.cameraPlayer)
 
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
