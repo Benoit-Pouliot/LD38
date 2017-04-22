@@ -20,7 +20,8 @@ if __name__ == '__main__':
     pygame.display.set_caption("LD38")
 
     # Init
-    pygame.mixer.pre_init(44100, -16, 2, 2048)
+    pygame.mixer.pre_init(16000 , -16, 2, 2048)
+    pygame.mixer.init()
     pygame.init()
     pygame.font.init()
 
@@ -31,3 +32,5 @@ if __name__ == '__main__':
     sceneHandler = SceneHandler(screen)
 
     sceneHandler.mainLoop()
+
+
