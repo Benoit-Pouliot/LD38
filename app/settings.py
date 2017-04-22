@@ -127,6 +127,11 @@ HUD_COLOR_2 = (128,0,0)
 FULL_LOAD_COLOR = (0,0,255)
 LOADING_COLOR = COLOR_MENU_2
 
+#Buy state
+SHOP_AVAILABLE = 0
+SHOP_SOLD_OUT = 1
+SHOP_REPEATABLE = 2
+
 # If you add a Tag for debugging, you MUST set it here at 0 for everyone
 # You can turn your tag on in your own settings_local.py for personal use
 
