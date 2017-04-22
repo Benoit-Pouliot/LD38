@@ -86,8 +86,13 @@ class Player(pygame.sprite.Sprite):
         self.imageShapeLeft = pygame.transform.flip(self.imageBase, True, False)
         self.imageShapeRight = self.imageBase
 
+    def setPastFramePos(self):
+        self.rect.x = self.pastFrameX
+        self.rect.y = self.pastFrameY
 
     def update(self):
+        self.pastFrameX = self.rect.x
+        self.pastFrameY = self.rect.y
         self.capSpeed()
         self.rect.x += self.speedx
         self.rect.y += self.speedy
@@ -244,6 +249,8 @@ class Player(pygame.sprite.Sprite):
                 self.collisionMask.rect.left -= (self.collisionMask.rect.left % self.mapData.tmxData.tilewidth)  # On colle le player sur le mur de gauche
             if sideOfCollision == DOWN:
                 self.speedy = 0
+                self.rect.y -= self.rect.bottom % self.mapData.tmxData.tileheight
+                #self.rect.y = self.pastFrameY
                 if self.jumpState != CLIMBING:
                     self.jumpState = GROUNDED
             if sideOfCollision == UP:
@@ -259,9 +266,6 @@ class Player(pygame.sprite.Sprite):
                 if self.jumpState == CLIMBING:
                     self.jumpState = JUMP
                     self.upPressed = False
-
-        if collidedWith == SPIKE:
-            self.dead()
 
         if collidedWith == SPRING:
             if sideOfCollision == DOWN:
@@ -293,6 +297,11 @@ class Player(pygame.sprite.Sprite):
             self.invincibleOnHit()
             self.visualFlash()
 
+    def mine(self):
+        targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+        if targetTile == SOLID:
+            print("SOLIDTILE")
+
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
@@ -310,7 +319,7 @@ class Player(pygame.sprite.Sprite):
             elif event.key == pygame.K_SPACE:
                 self.jump()
             elif event.key == pygame.K_LCTRL:
-                pass
+                self.mine()
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:

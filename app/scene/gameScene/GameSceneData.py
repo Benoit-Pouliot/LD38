@@ -86,7 +86,6 @@ class GameSceneData:
         self.close()
 
     def reqImageName(self, nameMap):
-        print(os.getcwd())
         return os.path.join('tiles_map', nameMap + ".tmx")
 
     def addHUD(self):
