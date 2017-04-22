@@ -67,7 +67,7 @@ class TmxData:
         self.diagnoseTmxData()
 
 
-    # Give the real type of tile for an gid
+    # Give the gid from the tile type
     def get_gidFromTileType(self, noTile):
         return self.reversedGidMap[noTile]
 
@@ -128,7 +128,6 @@ class TmxData:
             bufferedRenderer.redraw_tiles(bufferedRenderer._buffer)
             # Clean up the list
             self.listTileToChange = []
-
 
 
     ###################################################

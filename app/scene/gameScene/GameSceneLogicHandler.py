@@ -2,6 +2,7 @@ from app.scene.gameScene.GameSceneData import GameSceneData
 from app.settings import *
 from ldLib.collision.collisionNotifySprite import collisionNotifySprite
 import pygame
+from app.collisionPlayer import CollisionPlayer
 
 class GameSceneLogicHandler:
     def __init__(self, gameData):
@@ -12,23 +13,27 @@ class GameSceneLogicHandler:
         self.gameData = gameData
         self.data = gameData.data
         self.player = gameData.data.player
+        self.collisionChecker = CollisionPlayer(self.player, self.data)
         # self.collisionChecker = CollisionPlayerPlatform(self.player, self.mapData)
 
     def handle(self): #Update, gravity and collisions must be handled in that order for jump to work
         self.applyFriction(self.player)
-        # self.collisionChecker.collisionAllSprites(self.player, self.mapData, self.gameData)
-        self.handleZoneCollision(self.player)
+
+        #self.handleZoneCollision(self.player)
+        self.collisionChecker.collisionAllSprites(self.player, self.data)
+
         self.checkShop()
         self.checkHighlight()
         self.data.allSprites.update()
         self.data.spritesHUD.update()
         self.applyGravity(self.player)
-        self.handleSpriteTileCollision(self.player, self.data)
+        # self.handleSpriteTileCollision(self.player, self.data)
 
     def handleSpriteTileCollision(self, sprite, data):
         if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
-            collisionNotifySprite(sprite, SOLID, data)
-            collisionNotifySprite(sprite, ENTRANCEWALL, data)
+            if TAG_MARIE == 1:
+                print(self.data.solidGID)
+            collisionNotifySprite(sprite, self.data.solidGID, data)
 
 
     def handleZoneCollision(self, player):

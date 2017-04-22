@@ -239,60 +239,6 @@ class Player(pygame.sprite.Sprite):
         self.speedy = -self.maxSpeedyUp
         #self.soundSpring.play()
 
-    def onCollision(self, collidedWith, sideOfCollision):
-        if collidedWith == SOLID:
-            if sideOfCollision == RIGHT:
-                #On colle le player sur le mur à droite
-                self.speedx = 0
-                self.collisionMask.rect.right += self.mapData.tmxData.tilewidth - (self.collisionMask.rect.right % self.mapData.tmxData.tilewidth) - 1
-            if sideOfCollision == LEFT:
-                self.speedx = 0
-                self.collisionMask.rect.left -= (self.collisionMask.rect.left % self.mapData.tmxData.tilewidth)  # On colle le player sur le mur de gauche
-            if sideOfCollision == DOWN:
-                self.speedy = 0
-                self.rect.y -= self.rect.bottom % self.mapData.tmxData.tileheight
-                #self.rect.y = self.pastFrameY
-                if self.jumpState != CLIMBING:
-                    self.jumpState = GROUNDED
-            if sideOfCollision == UP:
-                # Coller le player sur le plafond
-                while self.mapData.tmxData.get_tile_gid((self.collisionMask.rect.left + 1) / self.mapData.tmxData.tilewidth,
-                                               (self.collisionMask.rect.top) / self.mapData.tmxData.tileheight,
-                                               COLLISION_LAYER) != SOLID and self.mapData.tmxData.get_tile_gid(
-                                                self.collisionMask.rect.right / self.mapData.tmxData.tilewidth,
-                                                (self.collisionMask.rect.top) / self.mapData.tmxData.tileheight, COLLISION_LAYER) != SOLID:
-                    self.collisionMask.rect.bottom -= 1
-                self.collisionMask.rect.bottom += 1  # Redescendre de 1 pour sortir du plafond
-                self.speedy = 0
-                if self.jumpState == CLIMBING:
-                    self.jumpState = JUMP
-                    self.upPressed = False
-
-        if collidedWith == SPRING:
-            if sideOfCollision == DOWN:
-                self.spring()
-            else: #On agit comme avec un SOLID
-                self.speedx = 0
-                # On colle le player sur le mur à droite
-                self.collisionMask.rect.right += self.mapData.tmxData.tilewidth - (self.collisionMask.rect.right % self.mapData.tmxData.tilewidth) - 1
-
-        if collidedWith == LADDER:
-            if sideOfCollision == UP:
-                if self.jumpState != CLIMBING:
-                    self.jumpState = CLIMBING
-                    self.speedx = 0
-                    self.speedy = 0
-
-        if collidedWith == NONE:
-            if sideOfCollision == DOWN:
-                if self.jumpState == GROUNDED:
-                    self.jumpState = JUMP
-
-            if sideOfCollision == UP:
-                if self.jumpState == CLIMBING:
-                    self.jumpState = JUMP
-                    self.upPressed = False
-
     def hurt(self):
         if not self.isInvincible:
             self.invincibleOnHit()
@@ -300,7 +246,7 @@ class Player(pygame.sprite.Sprite):
 
     def mine(self):
         targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
-        if targetTile == SOLID:
+        if targetTile == self.mapData.solidGID:
             self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
             self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
             self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
@@ -314,8 +260,7 @@ class Player(pygame.sprite.Sprite):
                 self.updateSpeedLeft()
                 self.leftPressed = True
             elif event.key == pygame.K_UP or event.key == pygame.K_w:
-                self.updateSpeedUp()
-                self.upPressed = True
+                self.jump()
             elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 self.updateSpeedDown()
                 self.downPressed = True
