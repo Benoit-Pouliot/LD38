@@ -18,7 +18,9 @@ class GameSceneLogicHandler:
         # self.applyFriction(self.mapData.allSprites)
         # self.collisionChecker.collisionAllSprites(self.player, self.mapData, self.gameData)
         # self.handleZoneCollision(self.player)
+        self.checkHighlight()
         self.data.allSprites.update()
+        self.data.spritesHUD.update()
 
     def handleZoneCollision(self, player):
         for obj in self.data.tmxData.objects:
@@ -58,3 +60,11 @@ class GameSceneLogicHandler:
                     sprite.speedx += FRICTION
                 elif sprite.speedx < 0:
                     sprite.speedx = 0
+
+    def checkHighlight(self):
+        mousePos = pygame.mouse.get_pos()
+        for obj in self.data.notifySet:
+            if obj.rect.collidepoint(mousePos):
+                obj.isSelected = True
+            else:
+                obj.isSelected = False

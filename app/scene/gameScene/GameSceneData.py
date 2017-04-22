@@ -6,11 +6,12 @@ import weakref
 
 from app.settings import *
 from app.sprites.Player import Player
+from app.sprites.Shop import Shop
+from app.sprites.GUI.HUD import HUD
 
 class GameSceneData:
-    def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld", screenSize=(SCREEN_WIDTH, SCREEN_HEIGHT)):
+    def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld",screenSize=(SCREEN_WIDTH,SCREEN_HEIGHT)):
         self.nextScene = None
-
         self.notifySet = weakref.WeakSet()
 
         # DEBUT MAP DATA
@@ -23,10 +24,7 @@ class GameSceneData:
         # self.soundController = soundPlayerController()
 
         self.allSprites = pygame.sprite.Group()
-        self.enemyGroup = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
-        self.friendlyBullet = pygame.sprite.Group()
-        self.enemyBullet = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
 
                 # if obj.type == "item":
@@ -50,7 +48,22 @@ class GameSceneData:
         self.player = Player(self.spawmPointPlayerx, self.spawmPointPlayery, self)
 
         self.allSprites.add(self.player)
+        self.notifySet.add(self.player)
         self.camera.add(self.player)
+
+        # Fin du mapData
+
+        #Create Shop
+        self.shopGroup = pygame.sprite.Group()
+        self.shop = Shop(self)
+        self.shopGroup.add(self.shop)
+        self.allSprites.add(self.shop)
+
+        self.money = 0
+        if TAG_MARIE == 1:
+            self.money = 1234
+
+        self.addHUD()
 
     def close(self):
         self.sceneRunning = False
@@ -62,3 +75,7 @@ class GameSceneData:
     def reqImageName(self, nameMap):
         print(os.getcwd())
         return os.path.join('tiles_map', nameMap + ".tmx")
+
+    def addHUD(self):
+        self.HUD = HUD(self)
+        self.spritesHUD.add(self.HUD)

@@ -31,6 +31,8 @@ SCREEN_HEIGHT = 600
 TILE_WIDTH = 32
 TILE_HEIGHT = 32
 
+UPGRADE_SIZE = 96
+
 # Development mode, DEV or OPT
 DEV_MODE = 1
 OPT_MODE = 0
@@ -110,14 +112,14 @@ INPUT_BOX_FONT = "Arial"
 INPUT_BOX_TEXT_SIZE = 20
 MENU_FONT = "Arial"
 
-COLOR_MENU_FONTS = WHITE
-COLOR_MENU_1 = (41,41,39)
-COLOR_MENU_2 = (142,120,12)
-COLOR_MENU_SELECT_1 = (128,0,0)
-COLOR_MENU_SELECT_2 = (204,255,255)
+COLOR_MENU_FONTS = BLACK
+COLOR_MENU_1 = (148,148,148)
+COLOR_MENU_2 = BLACK
+COLOR_MENU_SELECT_1 = (0,159,0)
+COLOR_MENU_SELECT_2 = (255,160,0)
 COLOR_MENU_FONTS_SELECT = WHITE
 
-HUD_FONT_COLOR = WHITE
+HUD_FONT_COLOR = BLACK
 HUD_FONT_SIZE = 20
 HUD_HEIGHT = 40
 HUD_COLOR_1 = COLOR_MENU_1
@@ -135,6 +137,6 @@ TAG_PHIL = 0
 
 # Load settings_local.py if exist
 try:
-    from test_tiled.app_test_tiled.Settings_local import *
+    from app.settings_local import *
 except ImportError:
     pass
