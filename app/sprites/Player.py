@@ -64,6 +64,7 @@ class Player(pygame.sprite.Sprite):
         self.leftPressed = False
         self.upPressed = False
         self.downPressed = False
+        self.leftMousePressed = False
 
         self.mapData = mapData
 
@@ -300,20 +301,22 @@ class Player(pygame.sprite.Sprite):
     def mine(self):
         targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
         if targetTile == SOLID:
-            print("SOLIDTILE")
+            self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
+            self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
+            self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 self.updateSpeedRight()
                 self.rightPressed = True
-            elif event.key == pygame.K_LEFT:
+            elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 self.updateSpeedLeft()
                 self.leftPressed = True
-            elif event.key == pygame.K_UP:
+            elif event.key == pygame.K_UP or event.key == pygame.K_w:
                 self.updateSpeedUp()
                 self.upPressed = True
-            elif event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 self.updateSpeedDown()
                 self.downPressed = True
             elif event.key == pygame.K_SPACE:
@@ -321,14 +324,26 @@ class Player(pygame.sprite.Sprite):
             elif event.key == pygame.K_LCTRL:
                 self.mine()
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == MOUSE_LEFT:
+                self.leftMousePressed = True
+            elif event.button == MOUSE_RIGHT:
+                self.rightMousePressed = True
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button == MOUSE_LEFT:
+                self.leftMousePressed = False
+            elif event.button == MOUSE_RIGHT:
+                self.rightMousePressed = False
+
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 self.rightPressed = False
-            elif event.key == pygame.K_LEFT:
+            elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 self.leftPressed = False
-            elif event.key == pygame.K_UP:
+            elif event.key == pygame.K_UP  or event.key == pygame.K_w:
                 self.upPressed = False
-            elif event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_DOWN  or event.key == pygame.K_s:
                 self.downPressed = False
 
     def updatePressedKeys(self):
@@ -340,3 +355,5 @@ class Player(pygame.sprite.Sprite):
             self.updateSpeedUp()
         if self.downPressed:
             self.updateSpeedDown()
+        if self.leftMousePressed:
+            self.mine()
