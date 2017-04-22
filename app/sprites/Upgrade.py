@@ -4,12 +4,15 @@ import os
 from app.settings import *
 
 class Upgrade(pygame.sprite.Sprite):
-    def __init__(self, key,imageName, method,cost):
+    def __init__(self, key,imageName, method,cost,boughtState=SHOP_AVAILABLE):
         super().__init__()
 
         self.key = key
         self.method = method
         self.cost = cost
+        self.unlock = False
+
+        self.boughtState = boughtState
 
         self.fontSize = 20
         self.upgFont = pygame.font.SysFont(FONT_NAME, self.fontSize)
@@ -57,8 +60,6 @@ class Upgrade(pygame.sprite.Sprite):
         self.image.blit(self.icon, self.iconPos)
 
         self.image.blit(self.printedCost,self.textCostPos)
-
- #blabla
 
     def setUpgradeSpec(self):
         self.textCost = str(self.cost)

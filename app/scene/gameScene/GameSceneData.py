@@ -71,7 +71,6 @@ class GameSceneData:
         #Create Shop
         self.shopGroup = pygame.sprite.Group()
         self.shop = Shop(self)
-        self.shopGroup.add(self.shop)
         self.allSprites.add(self.shop)
 
         self.money = 0
