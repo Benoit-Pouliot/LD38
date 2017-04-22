@@ -34,8 +34,6 @@ class GameSceneData:
         self.localTmxData = TmxData(self.tmxData)
 
         self.solidGID = self.localTmxData.get_gidFromTileType(SOLID)
-        if TAG_MARIE == 1:
-            print(self.solidGID)
         self.ladderGID = self.localTmxData.get_gidFromTileType(LADDER)
 
 

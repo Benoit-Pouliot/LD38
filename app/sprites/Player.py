@@ -240,7 +240,7 @@ class Player(pygame.sprite.Sprite):
         #self.soundSpring.play()
 
     def onCollision(self, collidedWith, sideOfCollision):
-        if collidedWith == SOLID:
+        if collidedWith == self.mapData.solidGID:
             if sideOfCollision == RIGHT:
                 #On colle le player sur le mur à droite
                 self.speedx = 0
@@ -258,9 +258,9 @@ class Player(pygame.sprite.Sprite):
                 # Coller le player sur le plafond
                 while self.mapData.tmxData.get_tile_gid((self.collisionMask.rect.left + 1) / self.mapData.tmxData.tilewidth,
                                                (self.collisionMask.rect.top) / self.mapData.tmxData.tileheight,
-                                               COLLISION_LAYER) != SOLID and self.mapData.tmxData.get_tile_gid(
+                                               COLLISION_LAYER) != self.mapData.solidGID and self.mapData.tmxData.get_tile_gid(
                                                 self.collisionMask.rect.right / self.mapData.tmxData.tilewidth,
-                                                (self.collisionMask.rect.top) / self.mapData.tmxData.tileheight, COLLISION_LAYER) != SOLID:
+                                                (self.collisionMask.rect.top) / self.mapData.tmxData.tileheight, COLLISION_LAYER) != self.mapData.solidGID:
                     self.collisionMask.rect.bottom -= 1
                 self.collisionMask.rect.bottom += 1  # Redescendre de 1 pour sortir du plafond
                 self.speedy = 0
@@ -271,12 +271,12 @@ class Player(pygame.sprite.Sprite):
         if collidedWith == SPRING:
             if sideOfCollision == DOWN:
                 self.spring()
-            else: #On agit comme avec un SOLID
+            else: #On agit comme avec un self.mapData.solidGID
                 self.speedx = 0
                 # On colle le player sur le mur à droite
                 self.collisionMask.rect.right += self.mapData.tmxData.tilewidth - (self.collisionMask.rect.right % self.mapData.tmxData.tilewidth) - 1
 
-        if collidedWith == LADDER:
+        if collidedWith == self.mapData.ladderGID:
             if sideOfCollision == UP:
                 if self.jumpState != CLIMBING:
                     self.jumpState = CLIMBING
@@ -300,7 +300,7 @@ class Player(pygame.sprite.Sprite):
 
     def mine(self):
         targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
-        if targetTile == SOLID:
+        if targetTile == self.mapData.solidGID:
             self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
             self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
             self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
