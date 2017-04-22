@@ -28,7 +28,6 @@ class GameSceneLogicHandler:
     def handleSpriteTileCollision(self, sprite, data):
         if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
             collisionNotifySprite(sprite, SOLID, data)
-            collisionNotifySprite(sprite, ENTRANCEWALL, data)
 
 
     def handleZoneCollision(self, player):
