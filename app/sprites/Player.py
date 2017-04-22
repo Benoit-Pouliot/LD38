@@ -4,6 +4,7 @@ import os
 from app.settings import *
 from app.sprites.CollisionMask import CollisionMask
 from app.sprites.Target import Target
+from ldLib.tools.Cooldown import Cooldown
 import math
 
 
@@ -73,6 +74,8 @@ class Player(pygame.sprite.Sprite):
         self.target = Target(0, 0)
         self.mapData.camera.add(self.target)
 
+        self.pickaxeCooldown = Cooldown(30)
+
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
         #self.soundBullet = pygame.mixer.Sound(os.path.join('music_pcm', 'Gun.wav'))
@@ -110,6 +113,10 @@ class Player(pygame.sprite.Sprite):
         self.updatePressedKeys()
         self.updateJumpState()
         self.updateTarget()
+        self.updateCooldowns()
+
+    def updateCooldowns(self):
+        self.pickaxeCooldown.update()
 
     def updateTarget(self):
         mousePos = pygame.mouse.get_pos()
@@ -245,11 +252,13 @@ class Player(pygame.sprite.Sprite):
             self.visualFlash()
 
     def mine(self):
-        targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
-        if targetTile == self.mapData.solidGID:
-            self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
-            self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
-            self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+        if self.pickaxeCooldown.isZero:
+            targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+            if targetTile == self.mapData.solidGID:
+                self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
+                self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
+                self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+                self.pickaxeCooldown.start()
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
