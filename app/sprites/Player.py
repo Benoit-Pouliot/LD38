@@ -3,6 +3,8 @@ import os
 
 from app.settings import *
 from app.sprites.CollisionMask import CollisionMask
+from app.sprites.Target import Target
+import math
 
 
 class Player(pygame.sprite.Sprite):
@@ -63,10 +65,12 @@ class Player(pygame.sprite.Sprite):
         self.upPressed = False
         self.downPressed = False
 
-
         self.mapData = mapData
 
         self.isAlive = True
+
+        self.target = Target(0, 0)
+        self.mapData.camera.add(self.target)
 
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
@@ -99,6 +103,28 @@ class Player(pygame.sprite.Sprite):
         self.updateCollisionMask()
         self.updatePressedKeys()
         self.updateJumpState()
+        self.updateTarget()
+
+    def updateTarget(self):
+        mousePos = pygame.mouse.get_pos()
+
+        diffx = mousePos[0]+self.mapData.cameraPlayer.view_rect.x-self.rect.centerx
+        diffy = mousePos[1]+self.mapData.cameraPlayer.view_rect.y-self.rect.centery
+
+        self.target.rect.centerx = TARGET_DISTANCE*(diffx)/self.vectorNorm(diffx,diffy) + self.rect.centerx
+        self.target.rect.centery = TARGET_DISTANCE*(diffy)/self.vectorNorm(diffx,diffy) + self.rect.centery
+
+        self.target.powerx = (diffx)/self.vectorNorm(diffx,diffy)
+        self.target.powery = (diffy)/self.vectorNorm(diffx,diffy)
+
+        angleRad = math.atan2(diffy, diffx)
+        self.target.image = pygame.transform.rotate(self.target.imageOrig, -angleRad/math.pi*180)
+
+        # self.image = self.rot_center(self.imageBase, -angleRad/math.pi*180)
+        #self.image = pygame.transform.rotate(self.imageBase, -angleRad/math.pi*180)
+
+    def vectorNorm(self,x,y):
+        return math.sqrt(x**2+y**2+EPS)
 
     def capSpeed(self):
         if self.jumpState == CLIMBING:
@@ -202,19 +228,6 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.image = self.imageShapeLeft
 
-    def shootBullet(self):
-        if self.facingSide == RIGHT:
-            bullet = Bullet(self.rect.x + self.rect.width +1, self.rect.centery, self.facingSide)
-        else:
-            bullet = Bullet(self.rect.x -1, self.rect.centery, self.facingSide)
-        self.mapData.camera.add(bullet)
-        self.mapData.allSprites.add(bullet)
-        self.mapData.friendlyBullet.add(bullet)
-
-        if TAG_MARIE ==1:
-            print(bullet.isCollisionApplied)
-        #self.soundBullet.play()
-
     def spring(self):
         self.jumpState = JUMP
         self.speedy = -self.maxSpeedyUp
@@ -297,7 +310,7 @@ class Player(pygame.sprite.Sprite):
             elif event.key == pygame.K_SPACE:
                 self.jump()
             elif event.key == pygame.K_LCTRL:
-                self.shootBullet()
+                pass
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
