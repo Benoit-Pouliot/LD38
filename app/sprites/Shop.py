@@ -62,9 +62,9 @@ class Shop(pygame.sprite.Sprite):
                 itemPosLeft+= UPGRADE_SIZE+10
 
     def addUpgrades(self):
-        self.addUpgrade('spring','pig',self.buySpring,516,SHOP_REPEATABLE)
-        self.addUpgrade('ladder', 'pig', self.buyLadder, 888, SHOP_REPEATABLE)
-        self.addUpgrade('antiGravity', 'pig', self.buyAntiGravity, 77, SHOP_REPEATABLE)
+        self.addUpgrade('spring','pig',self.buySpring,10,SHOP_REPEATABLE)
+        self.addUpgrade('ladder', 'pig', self.buyLadder, 1000, SHOP_REPEATABLE)
+        self.addUpgrade('antiGravity', 'pig', self.buyAntiGravity, 100000, SHOP_REPEATABLE)
 
         self.addUpgrade('pickaxe', 'pig', self.buyPickaxe, 1, SHOP_AVAILABLE)
         self.addUpgrade('drill', 'pig', self.buyDrill, 2, SHOP_AVAILABLE)

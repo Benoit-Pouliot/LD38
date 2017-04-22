@@ -30,13 +30,32 @@ class HUD(pygame.sprite.Sprite):
         self.HUDFont = pygame.font.SysFont(FONT_NAME, self.fontSize)
 
         self.moneyLabel = StatDisplay(self.image,(SCREEN_WIDTH* 0.8, 5),self.HUDFont, 'Gems')
+        self.ladderLabel = StatDisplay(self.image,(SCREEN_WIDTH* 0.1, 5),self.HUDFont, 'Ladder')
+        self.springLabel = StatDisplay(self.image,(SCREEN_WIDTH* 0.3, 5),self.HUDFont, 'Spring')
+        self.antiGravityLabel = StatDisplay(self.image,(SCREEN_WIDTH* 0.5, 5),self.HUDFont, 'Anti-gravity')
+
 
     def update(self):
         self.image.fill(self.color2)
         self.image.fill(self.color1, self.interior)
 
-        self.updateGoldAmount()
+        self.updateMoney()
+        self.updateSpring()
+        self.updateLadder()
+        self.updateAntiGravity()
 
-    def updateGoldAmount(self):
+    def updateMoney(self):
         self.moneyLabel.stat = str(self.data.money)
         self.moneyLabel.printText()
+
+    def updateSpring(self):
+        self.springLabel.stat = str(self.data.nbSpring)
+        self.springLabel.printText()
+
+    def updateLadder(self):
+        self.ladderLabel.stat = str(self.data.nbLadder)
+        self.ladderLabel.printText()
+
+    def updateAntiGravity(self):
+        self.antiGravityLabel.stat = str(self.data.nbAntiGravity)
+        self.antiGravityLabel.printText()

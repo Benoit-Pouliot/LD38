@@ -33,6 +33,12 @@ class GameSceneData:
         # Local TmxData : Usefull to modify the tmxData
         self.localTmxData = TmxData(self.tmxData)
 
+        self.solidGID = self.localTmxData.get_gidFromTileType(SOLID)
+        if TAG_MARIE == 1:
+            print(self.solidGID)
+        self.ladderGID = self.localTmxData.get_gidFromTileType(LADDER)
+
+
         if TAG_BP:
             self.localTmxData.addTileXYToListToChange((5*32,27*32), 0, 2)
             self.localTmxData.addTileXYToListToChange((6*32,27*32), 0, 'Terrain_TL')
@@ -73,9 +79,17 @@ class GameSceneData:
         self.shop = Shop(self)
         self.activateShop = False
 
+        # Player invetory
         self.money = 0
+        self.nbSpring = 0
+        self.nbLadder = 0
+        self.nbAntiGravity = 0
+
         if TAG_MARIE == 1:
-            self.money = 12345
+            self.money = 12345678
+            self.nbSpring = 3
+            self.nbLadder = 2
+            self.nbAntiGravity = 1
 
         self.addHUD()
 
