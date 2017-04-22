@@ -139,3 +139,9 @@ try:
     from app.settings_local import *
 except ImportError:
     pass
+
+# To check the version of some package, one can use
+# print(pygame.__version__)
+# print(pytmx.__version__)
+# print(pyscroll.__version__)
+# print(numpy.__version__)
