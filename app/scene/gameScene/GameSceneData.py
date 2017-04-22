@@ -71,11 +71,11 @@ class GameSceneData:
         #Create Shop
         self.shopGroup = pygame.sprite.Group()
         self.shop = Shop(self)
-        self.allSprites.add(self.shop)
+        self.activateShop = False
 
         self.money = 0
         if TAG_MARIE == 1:
-            self.money = 1234
+            self.money = 12345
 
         self.addHUD()
 

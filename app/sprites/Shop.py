@@ -82,7 +82,6 @@ class Shop(pygame.sprite.Sprite):
         self.upgradeList[name] = Upgrade(name,imageName,method,cost,boughtState)
         item = self.upgradeList[name]
         self.data.shopGroup.add(item)
-        self.data.notifySet.add(item)
 
     def checkNewLink(self,name):
         if name == 'pickaxe':

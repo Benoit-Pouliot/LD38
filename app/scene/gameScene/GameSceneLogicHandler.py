@@ -17,7 +17,8 @@ class GameSceneLogicHandler:
     def handle(self): #Update, gravity and collisions must be handled in that order for jump to work
         self.applyFriction(self.player)
         # self.collisionChecker.collisionAllSprites(self.player, self.mapData, self.gameData)
-        # self.handleZoneCollision(self.player)
+        self.handleZoneCollision(self.player)
+        self.checkShop()
         self.checkHighlight()
         self.data.allSprites.update()
         self.data.spritesHUD.update()
@@ -31,6 +32,7 @@ class GameSceneLogicHandler:
 
 
     def handleZoneCollision(self, player):
+        inShopZone = False
         for obj in self.data.tmxData.objects:
             if self.isPlayerIsInZone(player, obj) == True:
                 if obj.name == "OutZone":
@@ -39,6 +41,14 @@ class GameSceneLogicHandler:
 
                     # Initializing new map
                     self.newMapData = GameSceneData(nameNewZone, nameInZone)
+                elif obj.name == "ShopZone":
+                    inShopZone = True
+
+        if inShopZone:
+            self.data.activateShop = True
+        else:
+            self.data.activateShop = False
+
 
     def isPlayerIsInZone(self, player, zone):
 
@@ -74,3 +84,13 @@ class GameSceneLogicHandler:
                 obj.isSelected = True
             else:
                 obj.isSelected = False
+
+    def checkShop(self):
+        if self.data.activateShop:
+            self.data.allSprites.add(self.data.shop)
+        else:
+            self.data.allSprites.remove(self.data.shop)
+            for sprites in self.data.shopGroup:
+                if self.data.spritesHUD.has(sprites):
+                    self.data.spritesHUD.remove(sprites)
+                    self.data.notifySet.remove(sprites)
