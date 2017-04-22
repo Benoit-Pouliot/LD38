@@ -340,8 +340,7 @@ class Player(pygame.sprite.Sprite):
                 self.updateSpeedLeft()
                 self.leftPressed = True
             elif event.key == pygame.K_UP or event.key == pygame.K_w:
-                self.updateSpeedUp()
-                self.upPressed = True
+                self.jump()
             elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 self.updateSpeedDown()
                 self.downPressed = True

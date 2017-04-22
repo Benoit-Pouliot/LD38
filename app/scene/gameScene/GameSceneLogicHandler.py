@@ -33,6 +33,7 @@ class GameSceneLogicHandler:
         if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
             collisionNotifySprite(sprite, SOLID, data)
 
+
     def handleZoneCollision(self, player):
         inShopZone = False
         for obj in self.data.tmxData.objects:
