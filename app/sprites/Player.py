@@ -244,10 +244,11 @@ class Player(pygame.sprite.Sprite):
             if sideOfCollision == RIGHT:
                 #On colle le player sur le mur à droite
                 self.speedx = 0
-                self.collisionMask.rect.right += self.mapData.tmxData.tilewidth - (self.collisionMask.rect.right % self.mapData.tmxData.tilewidth) - 1
+                self.rect.right -= self.rect.right % self.mapData.tmxData.tilewidth
+                #self.collisionMask.rect.right += self.mapData.tmxData.tilewidth - (self.collisionMask.rect.right % self.mapData.tmxData.tilewidth) - 1
             if sideOfCollision == LEFT:
                 self.speedx = 0
-                self.collisionMask.rect.left -= (self.collisionMask.rect.left % self.mapData.tmxData.tilewidth)  # On colle le player sur le mur de gauche
+                self.rect.left += self.mapData.tmxData.tilewidth - (self.rect.left % self.mapData.tmxData.tilewidth)  # On colle le player sur le mur de gauche
             if sideOfCollision == DOWN:
                 self.speedy = 0
                 self.rect.y -= self.rect.bottom % self.mapData.tmxData.tileheight
@@ -255,15 +256,8 @@ class Player(pygame.sprite.Sprite):
                 if self.jumpState != CLIMBING:
                     self.jumpState = GROUNDED
             if sideOfCollision == UP:
-                # Coller le player sur le plafond
-                while self.mapData.tmxData.get_tile_gid((self.collisionMask.rect.left + 1) / self.mapData.tmxData.tilewidth,
-                                               (self.collisionMask.rect.top) / self.mapData.tmxData.tileheight,
-                                               COLLISION_LAYER) != SOLID and self.mapData.tmxData.get_tile_gid(
-                                                self.collisionMask.rect.right / self.mapData.tmxData.tilewidth,
-                                                (self.collisionMask.rect.top) / self.mapData.tmxData.tileheight, COLLISION_LAYER) != SOLID:
-                    self.collisionMask.rect.bottom -= 1
-                self.collisionMask.rect.bottom += 1  # Redescendre de 1 pour sortir du plafond
                 self.speedy = 0
+                self.rect.y += self.mapData.tmxData.tileheight - (self.rect.top % self.mapData.tmxData.tileheight)
                 if self.jumpState == CLIMBING:
                     self.jumpState = JUMP
                     self.upPressed = False
@@ -292,6 +286,38 @@ class Player(pygame.sprite.Sprite):
                 if self.jumpState == CLIMBING:
                     self.jumpState = JUMP
                     self.upPressed = False
+    def notifyCollisions(self, collisions):
+        if len(collisions) == 1: #SIMPLE COLLISION
+            self.onCollision(collisions[0][0], collisions[0][1])
+
+        if len(collisions) == 2: #CORNER COLLISIONS
+            if collisions[0][1] == RIGHT and collisions[1][1] == UP:
+                insideX = self.rect.right % self.mapData.tmxData.tilewidth
+                insideY = self.mapData.tmxData.tileheight - (self.rect.top % self.mapData.tmxData.tileheight)
+                if insideX < insideY:
+                    self.onCollision(collisions[0][0], collisions[0][1])
+                else:
+                    self.onCollision(collisions[1][0], collisions[1][1])
+
+            if collisions[0][1] == RIGHT and collisions[1][1] == DOWN:
+                insideX = self.rect.right % self.mapData.tmxData.tilewidth
+                insideY = self.rect.bottom % self.mapData.tmxData.tileheight
+                self.onCollision(collisions[0][0], collisions[0][1])
+
+                self.onCollision(collisions[1][0], collisions[1][1])
+
+        if len(collisions) == 3:
+            if collisions[0][1] == RIGHT and collisions[1][1] == LEFT and collisions[2][1] == DOWN:
+                insideXRight = self.rect.right % self.mapData.tmxData.tilewidth
+                insideXLeft = self.mapData.tmxData.tilewidth - (self.rect.left % self.mapData.tmxData.tilewidth)
+                insideY = self.mapData.tmxData.tileheight - (self.rect.top % self.mapData.tmxData.tileheight)
+                minimum = min(insideXRight, insideXLeft, insideY)
+                if minimum == insideXRight:
+                    self.onCollision(collisions[0][0], collisions[0][1])
+                elif minimum == insideXLeft:
+                    self.onCollision(collisions[1][0], collisions[1][1])
+                elif minimum == insideY:
+                    self.onCollision(collisions[2][0], collisions[2][1])
 
     def hurt(self):
         if not self.isInvincible:
