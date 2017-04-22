@@ -59,9 +59,7 @@ DOWN = 3
 #Collisions
 COLLISION_LAYER = 0
 SOLID = 1 #Booléen de GID pour collision
-ENTRANCEWALL = 2
-SPRING = 3
-LADDER = 4
+LADDER = 3
 NONE = 5 #Pour identifier qu'il n'y a eu aucune collision
 
 OBSTACLE = 100 #This is not a tile
