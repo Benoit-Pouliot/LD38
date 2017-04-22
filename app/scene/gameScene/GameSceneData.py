@@ -1,15 +1,17 @@
-import pyscroll
-import pytmx
-import pygame
+import logging
 import os
 import weakref
-import logging
+
+import pygame
+import pyscroll
+import pytmx
 
 from app.settings import *
+from app.sprites.GUI.HUD import HUD
 from app.sprites.Player import Player
 from app.sprites.Shop import Shop
-from app.sprites.GUI.HUD import HUD
-from app.scene.gameScene.TmxData import TmxData
+from ldLib.tools.TmxData import TmxData
+
 
 class GameSceneData:
     def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld",screenSize=(SCREEN_WIDTH,SCREEN_HEIGHT)):
@@ -86,7 +88,7 @@ class GameSceneData:
         self.close()
 
     def reqImageName(self, nameMap):
-        print(os.getcwd())
+        # print(os.getcwd())
         return os.path.join('tiles_map', nameMap + ".tmx")
 
     def addHUD(self):

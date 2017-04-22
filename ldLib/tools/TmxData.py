@@ -32,11 +32,12 @@
 # http://pytmx.readthedocs.io/en/latest/
 #
 
+import ntpath
 import pprint as pp
 import re
-import ntpath
+
 from app.settings import *
-from app.tools.Printer import *
+from ldLib.tools.Printer import *
 
 
 class TmxData:
