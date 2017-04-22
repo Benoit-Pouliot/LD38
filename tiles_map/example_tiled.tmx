@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" nextobjectid="2">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" nextobjectid="10">
  <properties>
   <property name="Solid_number" value="1"/>
  </properties>
- <tileset firstgid="1" name="collision_set" tilewidth="32" tileheight="32" tilecount="50">
+ <tileset firstgid="1" name="collision_set" tilewidth="32" tileheight="32" tilecount="50" columns="5">
   <image source="img/collision_set.png" width="160" height="320"/>
  </tileset>
- <tileset firstgid="51" name="Set_01" tilewidth="32" tileheight="32" tilecount="25">
+ <tileset firstgid="51" name="Set_01" tilewidth="32" tileheight="32" tilecount="25" columns="5">
   <image source="img/Set_01.png" width="160" height="160"/>
  </tileset>
  <layer name="Collision_TL" width="30" height="30">
@@ -287,6 +287,7 @@
     <property name="StartPoint" value="InZone_01"/>
    </properties>
   </object>
+  <object id="6" name="ShopZone" x="602" y="732" width="126" height="131"/>
  </objectgroup>
  <objectgroup name="Sprite_OL"/>
 </map>
