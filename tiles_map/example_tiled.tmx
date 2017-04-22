@@ -287,7 +287,7 @@
     <property name="StartPoint" value="InZone_01"/>
    </properties>
   </object>
-  <object id="6" name="ShopZone" x="602" y="732" width="126" height="131"/>
+  <object id="6" name="ShopZone" x="529" y="732" width="199" height="131"/>
  </objectgroup>
  <objectgroup name="Sprite_OL"/>
 </map>
