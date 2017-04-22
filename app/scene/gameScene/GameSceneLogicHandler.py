@@ -1,5 +1,6 @@
 from app.scene.gameScene.GameSceneData import GameSceneData
 from app.settings import *
+from ldLib.collision.collisionNotifySprite import collisionNotifySprite
 import pygame
 
 class GameSceneLogicHandler:
@@ -13,14 +14,21 @@ class GameSceneLogicHandler:
         self.player = gameData.data.player
         # self.collisionChecker = CollisionPlayerPlatform(self.player, self.mapData)
 
-    def handle(self):
-        # self.applyGravity(self.mapData.allSprites)
-        # self.applyFriction(self.mapData.allSprites)
+    def handle(self): #Update, gravity and collisions must be handled in that order for jump to work
+        self.applyFriction(self.player)
         # self.collisionChecker.collisionAllSprites(self.player, self.mapData, self.gameData)
         # self.handleZoneCollision(self.player)
         self.checkHighlight()
         self.data.allSprites.update()
         self.data.spritesHUD.update()
+        self.applyGravity(self.player)
+        self.handleSpriteTileCollision(self.player, self.data)
+
+    def handleSpriteTileCollision(self, sprite, data):
+        if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
+            collisionNotifySprite(sprite, SOLID, data)
+            collisionNotifySprite(sprite, ENTRANCEWALL, data)
+
 
     def handleZoneCollision(self, player):
         for obj in self.data.tmxData.objects:
@@ -42,24 +50,22 @@ class GameSceneLogicHandler:
         else:
            return False
 
-    def applyGravity(self, allSprites):
-        for sprite in allSprites:
-            if sprite.isPhysicsApplied == True or sprite.isGravityApplied == True:
-                sprite.speedy += GRAVITY
+    def applyGravity(self, sprite):
+        if sprite.isPhysicsApplied == True or sprite.isGravityApplied == True:
+            sprite.speedy += GRAVITY
 
-    def applyFriction(self, allSprites):
-        for sprite in allSprites:
-            if sprite.isPhysicsApplied == True or sprite.isFrictionApplied == True:
-                pass
-                if sprite.speedx > 0 and sprite.speedx - FRICTION > 0:
-                    sprite.speedx -= FRICTION
-                elif sprite.speedx > 0:
-                    sprite.speedx = 0
+    def applyFriction(self, sprite):
+        if sprite.isPhysicsApplied == True or sprite.isFrictionApplied == True:
+            pass
+            if sprite.speedx > 0 and sprite.speedx - FRICTION > 0:
+                sprite.speedx -= FRICTION
+            elif sprite.speedx > 0:
+                sprite.speedx = 0
 
-                if sprite.speedx < 0 and sprite.speedx + FRICTION < 0:
-                    sprite.speedx += FRICTION
-                elif sprite.speedx < 0:
-                    sprite.speedx = 0
+            if sprite.speedx < 0 and sprite.speedx + FRICTION < 0:
+                sprite.speedx += FRICTION
+            elif sprite.speedx < 0:
+                sprite.speedx = 0
 
     def checkHighlight(self):
         mousePos = pygame.mouse.get_pos()

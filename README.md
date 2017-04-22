@@ -8,10 +8,10 @@ Game for the LudumDare 38
 
 # Python Packages
 
-[PyGame](http://www.pygame.org/download.shtml)
+[PyGame 1.9.3](http://www.pygame.org/download.shtml)
 
-[PyTMX](http://pytmx.readthedocs.org/en/latest/)
+[PyTMX 3.20.14](http://pytmx.readthedocs.org/en/latest/)
 
-[PyScroll](http://pygame.org/project-pyscroll-2892-.html)
+[PyScroll 2.16.13](http://pygame.org/project-pyscroll-2892-.html)
 
-[NumPy](http://www.numpy.org/)
+[NumPy 1.11.2](http://www.numpy.org/)

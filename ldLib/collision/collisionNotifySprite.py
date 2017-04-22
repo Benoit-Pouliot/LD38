@@ -1,6 +1,6 @@
 __author__ = 'Bobsleigh'
 
-from collision.collisionTile import *
+from ldLib.collision.collisionTile import *
 
 def collisionNotifySprite(sprite, tileType, mapData):
     tile, direction = rightCollision(sprite, tileType, mapData)
