@@ -1,8 +1,9 @@
 import pygame
 
 class LogicHandler:
-    def __init__(self,data):
-        self.data = data
+    def __init__(self,gameData):
+        self.gameData = gameData
+        self.data = gameData.data
         self.nextScene = None
 
     def handle(self):

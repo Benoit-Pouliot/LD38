@@ -9,8 +9,8 @@ class GameSceneLogicHandler:
         self.endState = None
         self.newMapData = None
         self.gameData = gameData
-        self.mapData = gameData.mapData
-        self.player = gameData.mapData.player
+        self.data = gameData.data
+        self.player = gameData.data.player
         # self.collisionChecker = CollisionPlayerPlatform(self.player, self.mapData)
 
     def handle(self):
@@ -18,10 +18,10 @@ class GameSceneLogicHandler:
         # self.applyFriction(self.mapData.allSprites)
         # self.collisionChecker.collisionAllSprites(self.player, self.mapData, self.gameData)
         # self.handleZoneCollision(self.player)
-        self.mapData.allSprites.update()
+        self.data.allSprites.update()
 
     def handleZoneCollision(self, player):
-        for obj in self.mapData.tmxData.objects:
+        for obj in self.data.tmxData.objects:
             if self.isPlayerIsInZone(player, obj) == True:
                 if obj.name == "OutZone":
                     nameNewZone = obj.LevelZone

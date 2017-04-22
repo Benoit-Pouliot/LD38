@@ -18,8 +18,8 @@ class SceneHandler:
         self.screen = screen
         self.gameData = GameData()
 
-        titleSceneData = TitleSceneData()
-        self.runningScene = Scene(self.screen, titleSceneData, TitleSceneLogicHandler(titleSceneData))
+        self.gameData.data = TitleSceneData()
+        self.runningScene = Scene(self.screen, self.gameData, TitleSceneLogicHandler(self.gameData))
 
     def mainLoop(self):
         self.handlerRunning = True
@@ -30,8 +30,8 @@ class SceneHandler:
     def getNextScene(self,scene=None):
         # When we exit the scene, this code executes
         if self.runningScene.nextScene == TITLE_SCENE:
-            titleSceneData = TitleSceneData()
-            self.runningScene = Scene(self.screen, titleSceneData, TitleSceneLogicHandler(titleSceneData))
+            self.gameData.data = TitleSceneData()
+            self.runningScene = Scene(self.screen, self.gameData, TitleSceneLogicHandler(self.gameData))
         elif self.runningScene.nextScene == GAME_SCENE:
-            self.gameData.mapData = GameSceneData("example_tiled", "InZone_01")
-            self.runningScene = Scene(self.screen, self.gameData.mapData, GameSceneLogicHandler(self.gameData),self.gameData,self.gameData.mapData.player)
+            self.gameData.data = GameSceneData("example_tiled", "InZone_01")
+            self.runningScene = Scene(self.screen, self.gameData, GameSceneLogicHandler(self.gameData))

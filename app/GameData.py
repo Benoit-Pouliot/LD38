@@ -9,7 +9,7 @@ import pygame
 class GameData:
     def __init__(self, scene=None):
 
-        self.mapData = None
+        self.data = None
         self.currentLevel = 1
 
         # self.initLevel(6)

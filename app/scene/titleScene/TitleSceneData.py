@@ -26,6 +26,7 @@ class TitleSceneData:
         self.background.image.fill((50,50,50))
         self.allSprites.add(self.background)
 
+        self.player = None
         self.camera = None
 
         self.createStartMenu()

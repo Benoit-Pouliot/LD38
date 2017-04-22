@@ -5,22 +5,22 @@ from ldLib.scene.Drawer import Drawer
 
 
 class Scene:
-    def __init__(self,screen,data,logicHandler,gameData=None, player = None):
+    def __init__(self,screen,gameData,logicHandler):
         # Screen
         self.gameData = gameData
         self.nextScene = None
 
         self.screen = screen
-        self.data = data
-        self.player = player
+        self.data = self.gameData.data
+        self.player = self.gameData.data.player
 
-        if player != None:
+        if self.player != None:
             self.data.allSprites.add(self.player)
             self.data.notifySet.add(self.player)
 
         if self.data.camera != None:
             self.camera = self.data.camera
-            if player != None:
+            if self.player != None:
                 self.data.camera.add(self.player)
         else:
             self.camera = None
