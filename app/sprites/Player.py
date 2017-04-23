@@ -222,6 +222,8 @@ class Player(pygame.sprite.Sprite):
 
     def updateCooldowns(self):
         self.pickaxeCooldown.update()
+        if not self.pickaxeCooldown.isZero:
+            self.mine()
         self.springCooldown.update()
 
     def updateTarget(self):
@@ -400,13 +402,12 @@ class Player(pygame.sprite.Sprite):
             self.visualFlash()
 
     def mine(self):
-        if self.pickaxeCooldown.isZero:
+        if self.pickaxeCooldown.value == 1:
             targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
             if targetTile == self.mapData.solidGID:
                 self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
                 self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
                 self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
-                self.pickaxeCooldown.start()
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
@@ -425,8 +426,6 @@ class Player(pygame.sprite.Sprite):
                 self.downPressed = True
             elif event.key == pygame.K_SPACE:
                 self.jump()
-            elif event.key == pygame.K_LCTRL:
-                self.mine()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == MOUSE_LEFT:
@@ -460,7 +459,8 @@ class Player(pygame.sprite.Sprite):
         if self.downPressed:
             self.updateSpeedDown()
         if self.leftMousePressed:
-            self.mine()
+            if self.pickaxeCooldown.isZero:
+                self.pickaxeCooldown.start()
         if self.rightMousePressed:
             self.createSpring()
 
