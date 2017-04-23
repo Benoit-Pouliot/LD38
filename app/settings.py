@@ -68,6 +68,9 @@ LADDER = 4
 SPIKE = 10
 NONE = 5 #Pour identifier qu'il n'y a eu aucune collision
 
+#TileTypes
+LADDER_TILE = 60
+
 #Tile no
 EARTH = 53
 
@@ -85,7 +88,7 @@ FRICTION = 1
 #Projectiles
 GRENADE_SPEEDX = 2
 GRENADE_SPEEDY = 2
-TARGET_DISTANCE = 35
+TARGET_DISTANCE = 30
 
 #PLAYER_STRENGTH
 PICKAXE_STRENGTH_LEVEL = (0,1,10,100)

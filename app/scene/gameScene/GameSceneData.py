@@ -31,8 +31,6 @@ class GameSceneData:
 
         self.tileLife = [[] for i in range(self.tmxData.width)]
 
-
-
         # self.soundController = soundPlayerController()
 
         # Local TmxData : Usefull to modify the tmxData
@@ -45,6 +43,7 @@ class GameSceneData:
         self.solidGID = self.localTmxData.get_gidFromTileType(SOLID)
         self.indestructibleGID = self.localTmxData.get_gidFromTileType(INDESTRUCTIBLE)
         self.ladderGID = self.localTmxData.get_gidFromTileType(LADDER)
+        self.ladderTileGID = self.localTmxData.get_gidFromTileType(LADDER_TILE)
 
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
@@ -87,7 +86,7 @@ class GameSceneData:
         # Player inventory
         self.money = 0
         self.nbSpring = 200
-        self.nbLadder = 0
+        self.nbLadder = 10
         self.nbAntiGravity = 0
         self.lvlPickaxe = 1
         self.lvlDrill = 0
