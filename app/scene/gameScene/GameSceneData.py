@@ -38,6 +38,7 @@ class GameSceneData:
 
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
+        self.springGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
         self.spritesBackGround = pygame.sprite.Group()
 
@@ -74,7 +75,7 @@ class GameSceneData:
 
         # Player inventory
         self.money = 0
-        self.nbSpring = 0
+        self.nbSpring = 200
         self.nbLadder = 0
         self.nbAntiGravity = 0
         self.lvlPickaxe = 1

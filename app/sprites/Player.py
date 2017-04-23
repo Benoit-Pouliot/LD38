@@ -4,9 +4,10 @@ import os
 from app.settings import *
 from app.sprites.CollisionMask import CollisionMask
 from app.sprites.Target import Target
+from app.sprites.items.Spring import Spring
+
 from ldLib.tools.Cooldown import Cooldown
 import math
-
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, mapData):
@@ -14,7 +15,35 @@ class Player(pygame.sprite.Sprite):
 
         self.name = "player"
 
-        self.imageBase=pygame.image.load(os.path.join('img', 'Pig.png'))
+        self.imageBase=pygame.image.load(os.path.join('img', 'gnome_v1.png'))
+
+        # Here we load all images
+        self.imageShapeStillRight = pygame.image.load(os.path.join('img', 'gnome_side_v2.png'))
+        self.imageShapeStillLeft = pygame.transform.flip(self.imageShapeStillRight, True, False)
+
+        self.imageShapeWalkRight = list()
+        self.imageShapeWalkRight.append(pygame.image.load(os.path.join('img', 'gnome_walk2.png')))
+        self.imageShapeWalkRight.append(self.imageShapeStillRight)
+        self.imageShapeWalkRight.append(pygame.image.load(os.path.join('img', 'gnome_walk1.png')))
+        self.imageShapeWalkRight.append(self.imageShapeStillRight)
+
+        self.imageShapeClimb = list()
+        self.imageShapeClimb.append(pygame.image.load(os.path.join('img', 'gnome_climb1.png')))
+        self.imageShapeClimb.append(pygame.image.load(os.path.join('img', 'gnome_climb2.png')))
+
+        self.imageShapeJumpRight = list()
+        self.imageShapeJumpRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe1.png')))
+        # self.imageShapeJumpRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe1.png')))
+
+
+        self.imageShapeWalkLeft = list()
+        for k in range(0, len(self.imageShapeWalkRight)):
+            self.imageShapeWalkLeft.append(pygame.transform.flip(self.imageShapeWalkRight[k], True, False))
+
+        self.imageShapeJumpLeft = list()
+        for k in range(0, len(self.imageShapeJumpRight)):
+            self.imageShapeJumpLeft.append(pygame.transform.flip(self.imageShapeJumpRight[k], True, False))
+
 
         self.imageShapeLeft = None
         self.imageShapeRight = None
@@ -66,15 +95,18 @@ class Player(pygame.sprite.Sprite):
         self.upPressed = False
         self.downPressed = False
         self.leftMousePressed = False
+        self.rightMousePressed = False
 
         self.mapData = mapData
 
         self.isAlive = True
+        self.springList = []
 
         self.target = Target(0, 0)
         self.mapData.camera.add(self.target)
 
         self.pickaxeCooldown = Cooldown(30)
+        self.springCooldown = Cooldown(30)
 
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
@@ -84,7 +116,21 @@ class Player(pygame.sprite.Sprite):
         #self.soundBullet.set_volume(.3)
         #self.soundGetHit.set_volume(.3)
 
-        self.collisionMask = CollisionMask(self.rect.x + 3, self.rect.y, self.rect.width-6, self.rect.height)
+        # Image counter
+        self.imageIterStateRight = 0
+        self.imageIterStateLeft = 0
+        self.imageWaitNextImage = 6
+        self.imageIterWait = 0
+        self.imageIterStateClimb = 0
+        self.imageClimbWaitNextImage = 16
+        self.imageClimbIterWait = 0
+        self.imageIterStateJump = 0
+        self.imageJumpWaitNextImage = 4
+        self.imageJumpIterWait = 0
+
+        self.modifierCMX = 11
+        self.modifierCMY = 8
+        self.collisionMask = CollisionMask(self.rect.x + self.modifierCMX, self.rect.y+self.modifierCMY, self.rect.width-2*self.modifierCMX, self.rect.height-self.modifierCMY)
 
     def setShapeImage(self):
         self.imageShapeLeft = pygame.transform.flip(self.imageBase, True, False)
@@ -101,12 +147,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
-        if self.speedx > 0:
-            self.image = self.imageShapeRight
-            self.facingSide = RIGHT
-        if self.speedx < 0:
-            self.image = self.imageShapeLeft
-            self.facingSide = LEFT
+        self.updateAnimation()
+        # if self.speedx > 0:
+        #     self.image = self.imageShapeRight
+        #     self.facingSide = RIGHT
+        # if self.speedx < 0:
+        #     self.image = self.imageShapeLeft
+        #     self.facingSide = LEFT
 
         self.invincibleUpdate()
         self.updateCollisionMask()
@@ -115,8 +162,67 @@ class Player(pygame.sprite.Sprite):
         self.updateTarget()
         self.updateCooldowns()
 
+
+    def updateAnimation(self):
+        # Animation movement
+        self.imageIterWait = min(self.imageIterWait+1, 2*self.imageWaitNextImage)
+
+        # Hack, we add the iterator for climbing only in movement
+        if self.speedx != 0 or self.speedy != 0:
+            self.imageClimbIterWait = min(self.imageClimbIterWait+1, 2*self.imageClimbWaitNextImage)
+
+        # Hack, we add the iterator for jumping only in movement
+        if self.speedx != 0 or self.speedy != 0:
+            self.imageJumpIterWait = min(self.imageJumpIterWait+1, 2*self.imageJumpWaitNextImage)
+
+        if self.jumpState == CLIMBING:
+            if self.imageClimbIterWait >= self.imageClimbWaitNextImage:
+                self.imageIterStateClimb = (self.imageIterStateClimb+1) % len(self.imageShapeClimb)
+                self.image = self.imageShapeClimb[self.imageIterStateClimb]
+                self.imageClimbIterWait = 0
+        elif self.jumpState == JUMP and self.speedx >= -1 and self.speedx <= 1:
+            if self.imageJumpIterWait >= self.imageJumpWaitNextImage:
+                self.imageIterStateJump = (self.imageIterStateJump+1) % len(self.imageShapeJumpRight)
+                if self.facingSide == RIGHT:
+                    self.image = self.imageShapeJumpRight[self.imageIterStateJump]
+                else:
+                    self.image = self.imageShapeJumpLeft[self.imageIterStateJump]
+                self.imageJumpIterWait = 0
+        elif self.speedx == 0:
+            self.imageIterStateRight = 0
+            self.imageIterStateLeft = 0
+            if self.facingSide == RIGHT:
+                self.image = self.imageShapeStillRight
+            else:
+                self.image = self.imageShapeStillLeft
+        elif self.speedx <= 1 and self.speedx > 0:
+            self.imageIterStateRight = 0
+            self.imageIterStateLeft = 0
+            self.image = self.imageShapeStillRight
+            self.facingSide = RIGHT
+        elif self.speedx >= -1 and self.speedx < 0:
+            self.imageIterStateRight = 0
+            self.imageIterStateLeft = 0
+            self.image = self.imageShapeStillLeft
+            self.facingSide = LEFT
+        elif self.speedx > 1:
+            self.imageIterStateLeft = 0
+            self.facingSide = RIGHT
+            if self.imageIterWait >= self.imageWaitNextImage:
+                self.imageIterStateRight = (self.imageIterStateRight+1) % len(self.imageShapeWalkRight)
+                self.image = self.imageShapeWalkRight[self.imageIterStateRight]
+                self.imageIterWait = 0
+        else: # self.speedx < -1:
+            self.imageIterStateRight = 0
+            self.facingSide = LEFT
+            if self.imageIterWait >= self.imageWaitNextImage:
+                self.imageIterStateLeft = (self.imageIterStateLeft+1) % len(self.imageShapeWalkLeft)
+                self.image = self.imageShapeWalkLeft[self.imageIterStateLeft]
+                self.imageIterWait = 0
+
     def updateCooldowns(self):
         self.pickaxeCooldown.update()
+        self.springCooldown.update()
 
     def updateTarget(self):
         mousePos = pygame.mouse.get_pos()
@@ -175,8 +281,8 @@ class Player(pygame.sprite.Sprite):
             self.speedy += self.accy
 
     def updateCollisionMask(self):
-        self.collisionMask.rect.x = self.rect.x
-        self.collisionMask.rect.y = self.rect.y
+        self.collisionMask.rect.x = self.rect.x+self.modifierCMX
+        self.collisionMask.rect.y = self.rect.y+self.modifierCMY
 
     def updateJumpState(self):
         if self.jumpState == CLIMBING:
@@ -219,6 +325,48 @@ class Player(pygame.sprite.Sprite):
             self.isInvincible = False
             self.invincibleFrameCounter = [0,0]
         self.visualFlash()
+
+    def createSpring(self):
+        #self.stop()
+        if self.mapData.nbSpring > 0 and self.springCooldown.isZero:
+
+            x = self.target.rect.x - (self.target.rect.x % self.mapData.tmxData.tileheight)
+            y = self.target.rect.y + (self.mapData.tmxData.tileheight - (self.target.rect.y % self.mapData.tmxData.tileheight) )
+
+            spring = Spring(x, y)
+            spring.rect.y -= spring.rect.height
+            col = pygame.sprite.spritecollide(spring, self.mapData.springGroup, False)
+            if not col:
+                self.mapData.allSprites.add(spring)
+                self.mapData.springGroup.add(spring)
+                self.mapData.camera.add(spring)
+                self.mapData.nbSpring -= 1
+                self.springList.append(spring)
+                self.springCooldown.start()
+
+    def bounce(self, speed):
+        self.speedy = -speed
+
+
+            # occupied = pygame.sprite.spritecollideany(barricade, self.mapData.enemyGroup)
+            # if occupied is None:
+            #     occupied = pygame.sprite.spritecollideany(barricade, self.mapData.obstacleGroup)
+            #
+            # if occupied is None:
+            #     self.soundBarricade.play()
+            #     self.mapData.camera.add(barricade)
+            #     self.mapData.allSprites.add(barricade)
+            #     self.mapData.obstacleGroup.add(barricade)
+            #
+            #     self.mapData.allSprites.add(barricade.lifeBar)
+            #     self.mapData.camera.add(barricade.lifeBar, layer=CAMERA_HUD_LAYER)
+            #
+            #     self.barricadeCharges -= 1
+            #
+            #     if self.barricadeCooldown.isZero:
+            #         self.barricadeCooldown.start()
+            # else:
+            #     barricade.destroy()
 
     def dead(self):
         self.isAlive = False
@@ -313,3 +461,6 @@ class Player(pygame.sprite.Sprite):
             self.updateSpeedDown()
         if self.leftMousePressed:
             self.mine()
+        if self.rightMousePressed:
+            self.createSpring()
+
