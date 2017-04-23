@@ -177,6 +177,12 @@ class Player(pygame.sprite.Sprite):
         self.modifierCMY = 8
         self.collisionMask = CollisionMask(self.rect.x + self.modifierCMX, self.rect.y+self.modifierCMY, self.rect.width-2*self.modifierCMX, self.rect.height-self.modifierCMY)
 
+        self.musicChanged = True
+        self.musicMode = MUSIC_OFF
+        self.musicType = MUSIC_TYPE1
+        self.musicName = {MUSIC_TYPE1: 'Main.mp3',
+                          MUSIC_TYPE2: 'SubTheme.mp3'}
+
     def setShapeImage(self):
         self.imageShapeLeft = pygame.transform.flip(self.imageBase, True, False)
         self.imageShapeRight = self.imageBase
@@ -207,6 +213,7 @@ class Player(pygame.sprite.Sprite):
         self.updateTarget()
         self.updateCooldowns()
 
+        self.updateMusic()
         self.updateAnimation()
 
 
@@ -637,6 +644,28 @@ class Player(pygame.sprite.Sprite):
         self.drillStrength = DRILL_STRENGTH_LEVEL[self.mapData.lvlDrill]
         self.dynamiteStrength = DYNAMITE_STRENGTH_LEVEL[self.mapData.lvlDynamite]
 
+    def updateMusic(self):
+
+        if self.musicType == MUSIC_TYPE1 and self.rect.centery > MUSIC_HEIGHT_SWITCH:
+            self.musicType = MUSIC_TYPE2
+            self.musicMode = MUSIC_OFF
+            self.musicChanged = True
+        if self.musicType == MUSIC_TYPE2 and self.rect.centery < MUSIC_HEIGHT_SWITCH:
+            self.musicType = MUSIC_TYPE1
+            self.musicMode = MUSIC_OFF
+            self.musicChanged = True
+        if self.musicChanged:
+            self.musicChanged = False
+            if self.musicMode == MUSIC_OFF:
+                self.musicMode = MUSIC_RUN
+                pygame.mixer.music.load(os.path.join('music', self.musicName[self.musicType]))
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)
+            elif self.musicMode == MUSIC_RUN:
+                pygame.mixer.music.set_volume(0.5)
+            elif self.musicMode == MUSIC_MUTED:
+                pygame.mixer.music.set_volume(0)
+
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
@@ -664,6 +693,13 @@ class Player(pygame.sprite.Sprite):
                     self.LeftClickMode = PLAYER_DRILL_MODE
             # elif event.key == pygame.K_3:
             #     self.LeftClickMode = PLAYER_DYNAMITE_MODE
+            elif event.key == pygame.K_m:
+                if self.musicMode == MUSIC_RUN:
+                    self.musicMode = MUSIC_MUTED
+                    self.musicChanged = True
+                elif self.musicMode == MUSIC_MUTED:
+                    self.musicMode = MUSIC_RUN
+                    self.musicChanged = True
 
 
         if event.type == pygame.MOUSEBUTTONDOWN:

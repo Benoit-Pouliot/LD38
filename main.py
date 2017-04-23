@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     # Init
     pygame.mixer.pre_init(16000 , -16, 2, 2048)
-    pygame.mixer.init()
+    # pygame.mixer.init()
     pygame.init()
     pygame.font.init()
 
