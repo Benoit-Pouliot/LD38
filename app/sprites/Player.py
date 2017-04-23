@@ -96,7 +96,7 @@ class Player(pygame.sprite.Sprite):
         self.maxSpeedyDownClimbing = 6
         self.accx = 2
         self.accy = 2
-        self.jumpSpeed = -13
+        self.jumpSpeed = -10
 
         self.isPhysicsApplied = False
         self.isGravityApplied = True
@@ -503,13 +503,8 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.imageShapeDigLeft[self.imageIterStateDig]
             self.pickaxeObj = Pickaxe(0, 0, self)
             self.mapData.camera.add(self.pickaxeObj)
-            pass
-        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
-            self.pickaxeObj.updatePickaxe()
-        if self.pickaxeCooldown.value == 1:
-            if self.pickaxeObj is not None:
-                self.pickaxeObj.kill()
-                self.pickaxeObj = None
+
+        if self.pickaxeCooldown.value == self.pickaxeCooldown.max-1:
             targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
             if targetTile == self.mapData.solidGID:
                 if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > 1:
@@ -521,6 +516,14 @@ class Player(pygame.sprite.Sprite):
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
                     self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
                     self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
+
+        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
+            self.pickaxeObj.updatePickaxe()
+        if self.pickaxeCooldown.value == 1:
+            if self.pickaxeObj is not None:
+                self.pickaxeObj.kill()
+                self.pickaxeObj = None
+
 
     def addRedTile(self, posx, posy, life, maxLife):
         x = posx * self.mapData.tmxData.tilewidth

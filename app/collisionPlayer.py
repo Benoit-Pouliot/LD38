@@ -152,8 +152,14 @@ class CollisionPlayer:
             #Coller le player sur le plafond
             while map.tmxData.get_tile_gid((player.collisionMask.rect.left+1)/tileWidth, (player.collisionMask.rect.top)/tileHeight, COLLISION_LAYER) != self.map.solidGID and map.tmxData.get_tile_gid(player.collisionMask.rect.right/tileWidth, (player.collisionMask.rect.top)/tileHeight, COLLISION_LAYER) != self.map.solidGID:
                 player.collisionMask.rect.bottom -= 1
-
+                player.rect.bottom -= 1
             player.collisionMask.rect.bottom += 1 #Redescendre de 1 pour sortir du plafond
+            player.rect.bottom += 1
+
+            # player.collisionMask.rect.top += tileHeight - (player.collisionMask.rect.top % tileHeight)
+            # player.rect.top += tileHeight - (player.rect.top % tileHeight)
+
+
             player.speedy = 0
 
             if player.jumpState == CLIMBING:
