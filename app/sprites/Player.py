@@ -128,7 +128,9 @@ class Player(pygame.sprite.Sprite):
         self.imageJumpWaitNextImage = 4
         self.imageJumpIterWait = 0
 
-        self.collisionMask = CollisionMask(self.rect.x + 3, self.rect.y, self.rect.width-6, self.rect.height)
+        self.modifierCMX = 11
+        self.modifierCMY = 8
+        self.collisionMask = CollisionMask(self.rect.x + self.modifierCMX, self.rect.y+self.modifierCMY, self.rect.width-2*self.modifierCMX, self.rect.height-self.modifierCMY)
 
     def setShapeImage(self):
         self.imageShapeLeft = pygame.transform.flip(self.imageBase, True, False)
@@ -279,8 +281,8 @@ class Player(pygame.sprite.Sprite):
             self.speedy += self.accy
 
     def updateCollisionMask(self):
-        self.collisionMask.rect.x = self.rect.x
-        self.collisionMask.rect.y = self.rect.y
+        self.collisionMask.rect.x = self.rect.x+self.modifierCMX
+        self.collisionMask.rect.y = self.rect.y+self.modifierCMY
 
     def updateJumpState(self):
         if self.jumpState == CLIMBING:
