@@ -117,12 +117,24 @@ class GameSceneData:
 
     def tileTypeToTileLife(self, tileType):
         #return TileLife(1)
-        if tileType == 53:
-            return TileLife(4)
-        elif tileType == 51:
-            return TileLife(7)
-        elif tileType == 52:
+        if tileType == 53: #Dirt
+            return TileLife(5)
+        elif tileType == 51 or tileType == 57: #Gold in dirt
+            return TileLife(6)
+        elif tileType == 52 or tileType == 58: #Pink gold in dirt
+            return TileLife(8)
+        elif tileType == 63: #Rock
+            return TileLife(10)
+        elif tileType == 59 or tileType == 77: #Pink gold in rock
             return TileLife(12)
+        elif tileType == 65 or tileType == 71: #Topaze in rock
+            return TileLife(16)
+        elif tileType == 69: #Blue rock
+            return TileLife(20)
+        elif tileType == 70 or tileType == 75: #Topaze in blue rock
+            return TileLife(24)
+        elif tileType == 76 or tileType == 81: #Red diamond in blue rock
+            return TileLife(32)
         else:
             return TileLife(1)
 

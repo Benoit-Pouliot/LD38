@@ -62,19 +62,19 @@ class Shop(pygame.sprite.Sprite):
                 itemPosLeft+= UPGRADE_SIZE+10
 
     def addUpgrades(self):
-        self.addUpgrade('spring','trempo1',self.buySpring,10,SHOP_REPEATABLE)
-        self.addUpgrade('ladder', 'ladder', self.buyLadder, 150, SHOP_REPEATABLE)
-        self.addUpgrade('antiGravity', 'antiGravity', self.buyAntiGravity, 50000, SHOP_REPEATABLE)
+        self.addUpgrade('spring','trempo1',self.buySpring,SPRING_COST,SHOP_REPEATABLE)
+        self.addUpgrade('ladder', 'ladder', self.buyLadder, LADDER_COST, SHOP_REPEATABLE)
+        self.addUpgrade('antiGravity', 'antiGravity', self.buyAntiGravity, ANTI_GRAVITY_COST, SHOP_REPEATABLE)
 
-        self.addUpgrade('pickaxeLvl2', 'pickaxeLvl2', self.buyPickaxe2, 100, SHOP_AVAILABLE)
-        self.addUpgrade('pickaxeLvl3', 'pickaxeLvl3', self.buyPickaxe3, 10000, SHOP_AVAILABLE)
+        self.addUpgrade('pickaxeLvl2', 'pickaxeLvl2', self.buyPickaxe2, PICKAXE_LVL_COST[2], SHOP_AVAILABLE)
+        self.addUpgrade('pickaxeLvl3', 'pickaxeLvl3', self.buyPickaxe3, PICKAXE_LVL_COST[3], SHOP_AVAILABLE)
 
-        self.addUpgrade('drillLvl1', 'drillLvl1-a', self.buyDrill1, 50, SHOP_AVAILABLE)
-        self.addUpgrade('drillLvl2', 'drillLvl2-a', self.buyDrill2, 1000, SHOP_AVAILABLE)
-        self.addUpgrade('drillLvl3', 'drillLvl3-a', self.buyDrill3, 20000, SHOP_AVAILABLE)
+        self.addUpgrade('drillLvl1', 'drillLvl1-a', self.buyDrill1, DRILL_LVL_COST[1], SHOP_AVAILABLE)
+        self.addUpgrade('drillLvl2', 'drillLvl2-a', self.buyDrill2, DRILL_LVL_COST[2], SHOP_AVAILABLE)
+        self.addUpgrade('drillLvl3', 'drillLvl3-a', self.buyDrill3, DRILL_LVL_COST[3], SHOP_AVAILABLE)
 
-        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, 5000, SHOP_AVAILABLE)
-        self.addUpgrade('dynamiteLvl2', 'dynamiteLvl2', self.buyDynamite2, 500000, SHOP_AVAILABLE)
+        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, DYNAMITE_LVL_COST[1], SHOP_AVAILABLE)
+        self.addUpgrade('dynamiteLvl2', 'dynamiteLvl2', self.buyDynamite2, DYNAMITE_LVL_COST[2], SHOP_AVAILABLE)
 
     # Unlock what needs to be unlocked
         self.upgradeList['spring'].unlock = True
