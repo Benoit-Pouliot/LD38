@@ -77,11 +77,14 @@ class GameSceneData:
         self.shop = Shop(self)
         self.activateShop = False
 
-        # Player invetory
+        # Player inventory
         self.money = 0
         self.nbSpring = 0
         self.nbLadder = 0
         self.nbAntiGravity = 0
+        self.lvlPickaxe = 1
+        self.lvlDrill = 0
+        self.lvlDynamite = 0
 
         if TAG_MARIE == 1:
             self.money = 12345678
