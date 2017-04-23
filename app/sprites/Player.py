@@ -140,6 +140,9 @@ class Player(pygame.sprite.Sprite):
         self.pickaxeObj = None
         self.drillObj = None
 
+        self.pickaxeStrength=1
+        self.drillStrength=0
+
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
         #self.soundBullet = pygame.mixer.Sound(os.path.join('music_pcm', 'Gun.wav'))
@@ -506,8 +509,8 @@ class Player(pygame.sprite.Sprite):
             targetTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
 
             if targetTile == self.mapData.solidGID:
-                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > self.pickaxeObj.strength:
-                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= self.pickaxeObj.strength
+                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > self.pickaxeStrength:
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= self.pickaxeStrength
                     self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
 
@@ -523,7 +526,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.imageShapeDigRight[self.imageIterStateDig]
             else:
                 self.image = self.imageShapeDigLeft[self.imageIterStateDig]
-            self.pickaxeObj = Pickaxe(0, 0, self)
+            self.pickaxeObj = Pickaxe(0, 0, self,self.mapData.lvlPickaxe)
             self.mapData.camera.add(self.pickaxeObj)
 
         if self.pickaxeCooldown.value < self.pickaxeCooldown.max-1 and self.pickaxeObj is not None:
@@ -582,8 +585,8 @@ class Player(pygame.sprite.Sprite):
             posY = self.rect.centery/self.mapData.tmxData.tileheight
             sideTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
             if sideTile == self.mapData.solidGID:
-                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > self.drillObj.strength:
-                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= self.drillObj.strength
+                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > self.drillStrength:
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= self.drillStrength
                     self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
                     ## get the gems
@@ -609,6 +612,11 @@ class Player(pygame.sprite.Sprite):
             elif nameGem == 'RED2': self.mapData.money += VAL_RED2
         except KeyError:
             pass
+
+    def setStrength(self):
+        self.pickaxeStrength = PICKAXE_STRENGTH_LEVEL[self.mapData.lvlPickaxe]
+        self.drillStrength = DRILL_STRENGTH_LEVEL[self.mapData.lvlDrill]
+        self.dynamiteStrength = DYNAMITE_STRENGTH_LEVEL[self.mapData.lvlDynamite]
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
