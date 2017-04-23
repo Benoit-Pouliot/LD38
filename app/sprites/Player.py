@@ -140,6 +140,9 @@ class Player(pygame.sprite.Sprite):
         self.pickaxeObj = None
         self.drillObj = None
 
+        self.pickaxeStrength=1
+        self.drillStrength=0
+
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
         #self.soundBullet = pygame.mixer.Sound(os.path.join('music_pcm', 'Gun.wav'))
@@ -155,11 +158,11 @@ class Player(pygame.sprite.Sprite):
         self.imageIterWait = 0
 
         self.imageIterStateDig = 0
-        self.imageDigWaitNextImage = int(DIG_COOLDOWN/4)
+        self.imageDigWaitNextImage = DIG_COOLDOWN//4
         self.imageDigIterWait = 0
 
         self.imageIterStateDrill = 0
-        self.imageDrillWaitNextImage = int(DRILL_COOLDOWN/4)
+        self.imageDrillWaitNextImage = DRILL_COOLDOWN//4
         self.imageDrillIterWait = 0
 
         self.imageIterStateClimb = 0
@@ -514,17 +517,6 @@ class Player(pygame.sprite.Sprite):
 
     def mine(self):
 
-        # We add the sprite
-        if self.pickaxeCooldown.value == self.pickaxeCooldown.max-1:
-            if self.facingSide == RIGHT:
-                self.image = self.imageShapeDigRight[self.imageIterStateDig]
-            else:
-                self.image = self.imageShapeDigLeft[self.imageIterStateDig]
-            self.pickaxeObj = Pickaxe(0, 0, self)
-            self.mapData.camera.add(self.pickaxeObj)
-
-        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
-            self.pickaxeObj.updatePickaxe()
         if self.pickaxeCooldown.value == 1:
             if self.pickaxeObj is not None:
                 self.pickaxeObj.kill()
@@ -536,20 +528,27 @@ class Player(pygame.sprite.Sprite):
             targetTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
 
             if targetTile == self.mapData.solidGID:
-                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > 1:
-                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > self.pickaxeStrength:
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= self.pickaxeStrength
                     self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
 
                     self.getGems(posX, posY)
-                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life = 0
 
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
                     self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
                     self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
 
-        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
+            if self.facingSide == RIGHT:
+                self.image = self.imageShapeDigRight[self.imageIterStateDig]
+            else:
+                self.image = self.imageShapeDigLeft[self.imageIterStateDig]
+            self.pickaxeObj = Pickaxe(0, 0, self,self.mapData.lvlPickaxe)
+            self.mapData.camera.add(self.pickaxeObj)
+
+        if self.pickaxeCooldown.value < self.pickaxeCooldown.max-1 and self.pickaxeObj is not None:
             self.pickaxeObj.updatePickaxe()
         if self.pickaxeCooldown.value == 1:
             if self.pickaxeObj is not None:
@@ -589,11 +588,12 @@ class Player(pygame.sprite.Sprite):
             if self.drillObj is not None:
                 self.drillObj.kill()
                 self.drillObj = None
-            self.drillObj = Drill(0, 0, self, 1)
+            self.drillObj = Drill(0, 0, self, self.mapData.lvlDrill)
             self.mapData.camera.add(self.drillObj)
-            pass
-        if self.drillCooldown.value < self.drillCooldown.max and self.drillObj is not None:
+
+        if self.drillCooldown.value < self.drillCooldown.max-1 and self.drillObj is not None:
             self.drillObj.updateDrill()
+
         if self.drillCooldown.value == 1:
             if self.facingSide == RIGHT:
                 widthSide = self.mapData.tmxData.tilewidth
@@ -604,13 +604,13 @@ class Player(pygame.sprite.Sprite):
             posY = self.rect.centery/self.mapData.tmxData.tileheight
             sideTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
             if sideTile == self.mapData.solidGID:
-                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > 1:
-                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > self.drillStrength:
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= self.drillStrength
                     self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
                     ## get the gems
                     self.getGems(posX, posY)
-                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life = 0
 
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0)
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0, COLLISION_LAYER)
@@ -631,6 +631,11 @@ class Player(pygame.sprite.Sprite):
             elif nameGem == 'RED2': self.mapData.money += VAL_RED2
         except KeyError:
             pass
+
+    def setStrength(self):
+        self.pickaxeStrength = PICKAXE_STRENGTH_LEVEL[self.mapData.lvlPickaxe]
+        self.drillStrength = DRILL_STRENGTH_LEVEL[self.mapData.lvlDrill]
+        self.dynamiteStrength = DYNAMITE_STRENGTH_LEVEL[self.mapData.lvlDynamite]
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
@@ -655,7 +660,8 @@ class Player(pygame.sprite.Sprite):
             elif event.key == pygame.K_1:
                 self.LeftClickMode = PLAYER_DIG_MODE
             elif event.key == pygame.K_2:
-                self.LeftClickMode = PLAYER_DRILL_MODE
+                if self.mapData.lvlDrill is not 0:
+                    self.LeftClickMode = PLAYER_DRILL_MODE
             # elif event.key == pygame.K_3:
             #     self.LeftClickMode = PLAYER_DYNAMITE_MODE
 

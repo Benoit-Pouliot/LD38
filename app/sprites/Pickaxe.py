@@ -3,10 +3,22 @@ import os
 from app.settings import *
 
 class Pickaxe(pygame.sprite.Sprite):
-    def __init__(self, x, y, player, nameImg='pickaxe.png'):
+    def __init__(self, x, y, player, lvlPickaxe=1):
         super().__init__()
 
         self.player = player
+
+        self.strength = 0
+        if lvlPickaxe == 1:
+            nameImg = 'pickaxe.png'
+            self.strength = 1
+        elif lvlPickaxe == 2:
+            nameImg = 'pickaxeLvl2.png'
+            self.strength = 10
+        elif lvlPickaxe == 3:
+            nameImg = 'pickaxeLvl3.png'
+            self.strength = 100
+
 
         self.imageOrig = pygame.image.load(os.path.join('img', nameImg))
         self.imageOrig = pygame.transform.scale(self.imageOrig, (16, 16))
@@ -40,7 +52,7 @@ class Pickaxe(pygame.sprite.Sprite):
         self.powerx = 0
         self.powery = 0
 
-        self.iter = 0
+        self.iter = 2
         self.iterChange = self.player.imageDigWaitNextImage
         self.iterState = 0
         self.iterStateMax = len(self.decaX)
