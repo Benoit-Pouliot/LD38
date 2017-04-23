@@ -28,10 +28,19 @@ class GameSceneData:
         self.tmxData = pytmx.util_pygame.load_pygame(self.reqImageName(self.nameMap))
         self.tiledMapData = pyscroll.data.TiledMapData(self.tmxData)
         self.cameraPlayer = pyscroll.BufferedRenderer(self.tiledMapData, screenSize, clamp_camera=True)
+
+        self.tileLife = [[] for i in range(self.tmxData.width)]
+
+
+
         # self.soundController = soundPlayerController()
 
         # Local TmxData : Usefull to modify the tmxData
         self.localTmxData = TmxData(self.tmxData)
+
+        for i in range(self.tmxData.width):
+            for j in range(self.tmxData.height):
+                self.tileLife[i].append(self.tileTypeToTileLife(self.localTmxData.get_tileTypeFromGid(self.tmxData.get_tile_gid(i, j, TERRAIN_LAYER))))
 
         self.solidGID = self.localTmxData.get_gidFromTileType(SOLID)
         self.indestructibleGID = self.localTmxData.get_gidFromTileType(INDESTRUCTIBLE)
@@ -39,6 +48,7 @@ class GameSceneData:
 
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
+        self.redTileMaskGroup = pygame.sprite.Group()
         self.springGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
         self.spritesBackGround = pygame.sprite.Group()
@@ -104,3 +114,19 @@ class GameSceneData:
     def addHUD(self):
         self.HUD = HUD(self)
         self.spritesHUD.add(self.HUD)
+
+    def tileTypeToTileLife(self, tileType):
+        #return TileLife(1)
+        if tileType == 53:
+            return TileLife(4)
+        elif tileType == 51:
+            return TileLife(7)
+        elif tileType == 52:
+            return TileLife(12)
+        else:
+            return TileLife(1)
+
+class TileLife:
+    def __init__(self, maxLife):
+        self.maxLife = maxLife
+        self.life = maxLife

@@ -17,13 +17,17 @@ if __name__ == '__main__':
     screenSize = (SCREEN_WIDTH, SCREEN_HEIGHT)
     screen = pygame.display.set_mode(screenSize)
 
-    pygame.display.set_caption("LD38")
+    pygame.display.set_caption("Gnome Digger")
 
     # Init
     pygame.mixer.pre_init(16000 , -16, 2, 2048)
     pygame.mixer.init()
     pygame.init()
     pygame.font.init()
+
+    # Icon
+    surface = pygame.image.load(os.path.join('img', 'gnome_v1.png'))
+    pygame.display.set_icon(surface)
 
     # Hide the mouse
     # pygame.mouse.set_visible(False)

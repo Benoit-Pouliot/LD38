@@ -4,7 +4,10 @@ import os
 from app.settings import *
 from app.sprites.CollisionMask import CollisionMask
 from app.sprites.Target import Target
+from app.sprites.Pickaxe import Pickaxe
+from app.sprites.Drill import Drill
 from app.sprites.items.Spring import Spring
+from app.sprites.RedTileMask import RedTileMask
 
 from ldLib.tools.Cooldown import Cooldown
 import math
@@ -15,7 +18,7 @@ class Player(pygame.sprite.Sprite):
 
         self.name = "player"
 
-        self.imageBase=pygame.image.load(os.path.join('img', 'gnome_v1.png'))
+        self.imageBase = pygame.image.load(os.path.join('img', 'gnome_v1.png'))
 
         # Here we load all images
         self.imageShapeStillRight = pygame.image.load(os.path.join('img', 'gnome_side_v2.png'))
@@ -26,6 +29,18 @@ class Player(pygame.sprite.Sprite):
         self.imageShapeWalkRight.append(self.imageShapeStillRight)
         self.imageShapeWalkRight.append(pygame.image.load(os.path.join('img', 'gnome_walk1.png')))
         self.imageShapeWalkRight.append(self.imageShapeStillRight)
+
+        self.imageShapeDigRight = list()
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe1.png')))
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe2.png')))
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe3.png')))
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_walk1.png')))
+
+        self.imageShapeDrillRight = list()
+        self.imageShapeDrillRight.append(pygame.image.load(os.path.join('img', 'gnome_drill1.png')))
+        self.imageShapeDrillRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe3.png')))
+        self.imageShapeDrillRight.append(pygame.image.load(os.path.join('img', 'gnome_drill2.png')))
+        self.imageShapeDrillRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe3.png')))
 
         self.imageShapeClimb = list()
         self.imageShapeClimb.append(pygame.image.load(os.path.join('img', 'gnome_climb1.png')))
@@ -39,6 +54,14 @@ class Player(pygame.sprite.Sprite):
         self.imageShapeWalkLeft = list()
         for k in range(0, len(self.imageShapeWalkRight)):
             self.imageShapeWalkLeft.append(pygame.transform.flip(self.imageShapeWalkRight[k], True, False))
+
+        self.imageShapeDigLeft = list()
+        for k in range(0, len(self.imageShapeDigRight)):
+            self.imageShapeDigLeft.append(pygame.transform.flip(self.imageShapeDigRight[k], True, False))
+
+        self.imageShapeDrillLeft = list()
+        for k in range(0, len(self.imageShapeDrillRight)):
+            self.imageShapeDrillLeft.append(pygame.transform.flip(self.imageShapeDrillRight[k], True, False))
 
         self.imageShapeJumpLeft = list()
         for k in range(0, len(self.imageShapeJumpRight)):
@@ -73,7 +96,7 @@ class Player(pygame.sprite.Sprite):
         self.maxSpeedyDownClimbing = 6
         self.accx = 2
         self.accy = 2
-        self.jumpSpeed = -13
+        self.jumpSpeed = -10
 
         self.isPhysicsApplied = False
         self.isGravityApplied = True
@@ -103,10 +126,19 @@ class Player(pygame.sprite.Sprite):
         self.springList = []
 
         self.target = Target(0, 0)
+        invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
+        invPix = invPix.convert_alpha()
+        self.target.imageOrig = invPix
         self.mapData.camera.add(self.target)
 
-        self.pickaxeCooldown = Cooldown(30)
+        self.LeftClickMode = PLAYER_DIG_MODE
+
+        self.pickaxeCooldown = Cooldown(DIG_COOLDOWN)
+        self.drillCooldown = Cooldown(DRILL_COOLDOWN)
         self.springCooldown = Cooldown(30)
+
+        self.pickaxeObj = None
+        self.drillObj = None
 
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
@@ -121,9 +153,19 @@ class Player(pygame.sprite.Sprite):
         self.imageIterStateLeft = 0
         self.imageWaitNextImage = 6
         self.imageIterWait = 0
+
+        self.imageIterStateDig = 0
+        self.imageDigWaitNextImage = int(DIG_COOLDOWN/4)
+        self.imageDigIterWait = 0
+
+        self.imageIterStateDrill = 0
+        self.imageDrillWaitNextImage = int(DRILL_COOLDOWN/4)
+        self.imageDrillIterWait = 0
+
         self.imageIterStateClimb = 0
         self.imageClimbWaitNextImage = 16
         self.imageClimbIterWait = 0
+
         self.imageIterStateJump = 0
         self.imageJumpWaitNextImage = 4
         self.imageJumpIterWait = 0
@@ -147,7 +189,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
-        self.updateAnimation()
+        # self.updateAnimation()
         # if self.speedx > 0:
         #     self.image = self.imageShapeRight
         #     self.facingSide = RIGHT
@@ -162,6 +204,8 @@ class Player(pygame.sprite.Sprite):
         self.updateTarget()
         self.updateCooldowns()
 
+        self.updateAnimation()
+
 
     def updateAnimation(self):
         # Animation movement
@@ -175,7 +219,40 @@ class Player(pygame.sprite.Sprite):
         if self.speedx != 0 or self.speedy != 0:
             self.imageJumpIterWait = min(self.imageJumpIterWait+1, 2*self.imageJumpWaitNextImage)
 
-        if self.jumpState == CLIMBING:
+        # Hack
+        if self.pickaxeCooldown.isZero:
+            self.imageIterStateDig = 0
+            self.imageDigIterWait = 0
+        if self.drillCooldown.isZero:
+            self.imageIterStateDrill = 0
+            self.imageDrillIterWait = 0
+
+
+        # Only if in drilling
+        if self.leftMousePressed and self.LeftClickMode == PLAYER_DRILL_MODE:
+            if self.imageDrillIterWait >= self.imageDrillWaitNextImage:
+                if self.facingSide == RIGHT:
+                    self.imageIterStateDrill = (self.imageIterStateDrill+1) % len(self.imageShapeDrillRight)
+                    self.image = self.imageShapeDrillRight[self.imageIterStateDrill]
+                else:
+                    self.imageIterStateDrill = (self.imageIterStateDrill+1) % len(self.imageShapeDrillRight)
+                    self.image = self.imageShapeDrillLeft[self.imageIterStateDrill]
+                self.imageDrillIterWait = 0
+            else:
+                self.imageDrillIterWait = self.imageDrillIterWait+1
+        # Only if in digging
+        elif self.LeftClickMode == PLAYER_DIG_MODE and not self.pickaxeCooldown.isZero:
+            if self.imageDigIterWait >= self.imageDigWaitNextImage:
+                if self.facingSide == RIGHT:
+                    self.imageIterStateDig = (self.imageIterStateDig+1) % len(self.imageShapeDigRight)
+                    self.image = self.imageShapeDigRight[self.imageIterStateDig]
+                else:
+                    self.imageIterStateDig = (self.imageIterStateDig+1) % len(self.imageShapeDigRight)
+                    self.image = self.imageShapeDigLeft[self.imageIterStateDig]
+                self.imageDigIterWait = 0
+            else:
+                self.imageDigIterWait = self.imageDigIterWait+1
+        elif self.jumpState == CLIMBING:
             if self.imageClimbIterWait >= self.imageClimbWaitNextImage:
                 self.imageIterStateClimb = (self.imageIterStateClimb+1) % len(self.imageShapeClimb)
                 self.image = self.imageShapeClimb[self.imageIterStateClimb]
@@ -221,7 +298,17 @@ class Player(pygame.sprite.Sprite):
                 self.imageIterWait = 0
 
     def updateCooldowns(self):
+        if not self.pickaxeCooldown.isZero:
+            self.mine()
         self.pickaxeCooldown.update()
+
+        if not self.drillCooldown.isZero:
+            self.drill()
+        if self.drillCooldown.isZero and self.drillObj is not None:
+            self.drillObj.kill()
+            self.drillObj = None
+        self.drillCooldown.update()
+
         self.springCooldown.update()
 
     def updateTarget(self):
@@ -330,11 +417,18 @@ class Player(pygame.sprite.Sprite):
         #self.stop()
         if self.mapData.nbSpring > 0 and self.springCooldown.isZero:
 
+
             x = self.target.rect.x - (self.target.rect.x % self.mapData.tmxData.tileheight)
             y = self.target.rect.y + (self.mapData.tmxData.tileheight - (self.target.rect.y % self.mapData.tmxData.tileheight) )
 
+
+
             spring = Spring(x, y)
             spring.rect.y -= spring.rect.height
+            currentTile = self.mapData.tmxData.get_tile_gid(spring.rect.x/self.mapData.tmxData.tilewidth, spring.rect.y/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+            if currentTile == self.mapData.solidGID or currentTile == self.mapData.indestructibleGID:
+                spring.kill()
+                return
             col = pygame.sprite.spritecollide(spring, self.mapData.springGroup, False)
             if not col:
                 self.mapData.allSprites.add(spring)
@@ -400,13 +494,124 @@ class Player(pygame.sprite.Sprite):
             self.visualFlash()
 
     def mine(self):
-        if self.pickaxeCooldown.isZero:
-            targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+
+        # We add the sprite
+        if self.pickaxeCooldown.value == self.pickaxeCooldown.max-1:
+            if self.facingSide == RIGHT:
+                self.image = self.imageShapeDigRight[self.imageIterStateDig]
+            else:
+                self.image = self.imageShapeDigLeft[self.imageIterStateDig]
+            self.pickaxeObj = Pickaxe(0, 0, self)
+            self.mapData.camera.add(self.pickaxeObj)
+
+        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
+            self.pickaxeObj.updatePickaxe()
+        if self.pickaxeCooldown.value == 1:
+            if self.pickaxeObj is not None:
+                self.pickaxeObj.kill()
+                self.pickaxeObj = None
+
+        if self.pickaxeCooldown.value == self.pickaxeCooldown.max-1:
+            posX = self.target.rect.centerx/self.mapData.tmxData.tilewidth
+            posY = self.target.rect.centery/self.mapData.tmxData.tileheight
+            targetTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
+
             if targetTile == self.mapData.solidGID:
-                self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
-                self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
-                self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
-                self.pickaxeCooldown.start()
+                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > 1:
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
+                else:
+
+                    self.getGems(posX, posY)
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+
+                    self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
+                    self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
+                    self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+                    self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
+
+        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
+            self.pickaxeObj.updatePickaxe()
+        if self.pickaxeCooldown.value == 1:
+            if self.pickaxeObj is not None:
+                self.pickaxeObj.kill()
+                self.pickaxeObj = None
+
+
+    def addRedTile(self, posx, posy, life, maxLife):
+        x = posx * self.mapData.tmxData.tilewidth
+        y = posy * self.mapData.tmxData.tileheight
+
+        for mask in self.mapData.redTileMaskGroup.sprites():
+            if mask.rect.x == x and mask.rect.y == y and mask.life > life:
+                mask.kill()
+
+        redTileMask = RedTileMask(x, y, life, maxLife)
+        self.mapData.redTileMaskGroup.add(redTileMask)
+        self.mapData.camera.add(redTileMask)
+
+    def destroyRedTile(self, posx, posy):
+        x = posx * self.mapData.tmxData.tilewidth
+        y = posy * self.mapData.tmxData.tileheight
+
+        for mask in self.mapData.redTileMaskGroup.sprites():
+            if mask.rect.x == x and mask.rect.y == y:
+                mask.kill()
+
+    def drill(self):
+        pass
+        # We add the sprite
+        if self.drillCooldown.value == self.drillCooldown.max-1:
+            if self.facingSide == RIGHT:
+                self.image = self.imageShapeDrillRight[self.imageIterStateDig]
+            else:
+                self.image = self.imageShapeDrillLeft[self.imageIterStateDig]
+
+            if self.drillObj is not None:
+                self.drillObj.kill()
+                self.drillObj = None
+            self.drillObj = Drill(0, 0, self, 1)
+            self.mapData.camera.add(self.drillObj)
+            pass
+        if self.drillCooldown.value < self.drillCooldown.max and self.drillObj is not None:
+            self.drillObj.updateDrill()
+        if self.drillCooldown.value == 1:
+            if self.facingSide == RIGHT:
+                widthSide = self.mapData.tmxData.tilewidth
+            else:
+                widthSide = -self.mapData.tmxData.tilewidth
+
+            posX = (self.rect.centerx+widthSide)/self.mapData.tmxData.tilewidth
+            posY = self.rect.centery/self.mapData.tmxData.tileheight
+            sideTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
+            if sideTile == self.mapData.solidGID:
+                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > 1:
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
+                else:
+                    ## get the gems
+                    self.getGems(posX, posY)
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+
+                    self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0)
+                    self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0, COLLISION_LAYER)
+                    self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+                    self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
+
+    def getGems(self, x, y):
+        targetTileType = self.mapData.localTmxData.get_tileType(x, y, TERRAIN_LAYER)
+        try:
+            nameGem = ID_GEM[targetTileType - NB_TSET]
+            if nameGem == 'GOLD1': self.mapData.money += VAL_GOLD1
+            elif nameGem == 'GOLD2': self.mapData.money += VAL_GOLD2
+            elif nameGem == 'PINK1': self.mapData.money += VAL_PINK1
+            elif nameGem == 'PINK2': self.mapData.money += VAL_PINK2
+            elif nameGem == 'GREEN1': self.mapData.money += VAL_GREEN1
+            elif nameGem == 'GREEN2': self.mapData.money += VAL_GREEN2
+            elif nameGem == 'RED1': self.mapData.money += VAL_RED1
+            elif nameGem == 'RED2': self.mapData.money += VAL_RED2
+        except KeyError:
+            pass
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
@@ -425,8 +630,13 @@ class Player(pygame.sprite.Sprite):
                 self.downPressed = True
             elif event.key == pygame.K_SPACE:
                 self.jump()
-            elif event.key == pygame.K_LCTRL:
-                self.mine()
+            elif event.key == pygame.K_1:
+                self.LeftClickMode = PLAYER_DIG_MODE
+            elif event.key == pygame.K_2:
+                self.LeftClickMode = PLAYER_DRILL_MODE
+            # elif event.key == pygame.K_3:
+            #     self.LeftClickMode = PLAYER_DYNAMITE_MODE
+
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == MOUSE_LEFT:
@@ -460,7 +670,12 @@ class Player(pygame.sprite.Sprite):
         if self.downPressed:
             self.updateSpeedDown()
         if self.leftMousePressed:
-            self.mine()
+            if self.LeftClickMode == PLAYER_DIG_MODE:
+                if self.pickaxeCooldown.isZero:
+                    self.pickaxeCooldown.start()
+            if self.LeftClickMode == PLAYER_DRILL_MODE:
+                if self.drillCooldown.isZero:
+                    self.drillCooldown.start()
         if self.rightMousePressed:
             self.createSpring()
 

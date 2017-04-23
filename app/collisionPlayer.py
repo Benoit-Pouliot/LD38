@@ -148,14 +148,18 @@ class CollisionPlayer:
         upRightTileGid = map.tmxData.get_tile_gid(player.collisionMask.rect.right/tileWidth, (player.collisionMask.rect.top + player.speedy)/tileHeight, COLLISION_LAYER)
         upMidTileGid = map.tmxData.get_tile_gid(player.collisionMask.rect.centerx/tileWidth, (player.collisionMask.rect.top + player.speedy)/tileHeight, COLLISION_LAYER)
 
-
-
         if upLeftTileGid == self.map.solidGID or upLeftTileGid  == self.map.indestructibleGID or upRightTileGid == self.map.solidGID or upRightTileGid  == self.map.indestructibleGID or upMidTileGid == self.map.solidGID or upMidTileGid  == self.map.indestructibleGID:
             #Coller le player sur le plafond
             while map.tmxData.get_tile_gid((player.collisionMask.rect.left+1)/tileWidth, (player.collisionMask.rect.top)/tileHeight, COLLISION_LAYER) != self.map.solidGID and map.tmxData.get_tile_gid(player.collisionMask.rect.right/tileWidth, (player.collisionMask.rect.top)/tileHeight, COLLISION_LAYER) != self.map.solidGID:
                 player.collisionMask.rect.bottom -= 1
-
+                player.rect.bottom -= 1
             player.collisionMask.rect.bottom += 1 #Redescendre de 1 pour sortir du plafond
+            player.rect.bottom += 1
+
+            # player.collisionMask.rect.top += tileHeight - (player.collisionMask.rect.top % tileHeight)
+            # player.rect.top += tileHeight - (player.rect.top % tileHeight)
+
+
             player.speedy = 0
 
             if player.jumpState == CLIMBING:
@@ -191,10 +195,13 @@ class CollisionPlayer:
             item.kill()
 
     def collisionWithSpring(self, player, springGroup):
-        collisionList = pygame.sprite.spritecollide(player, springGroup, False)
+        collisionList = pygame.sprite.spritecollide(player, springGroup, False, self.collisionWithMasks)
         for spring in collisionList:
             spring.bounce()
             player.bounce(spring.bounceSpeed)
+
+    def collisionWithMasks(self, player, sprite):
+        return player.collisionMask.rect.colliderect(sprite.collisionMask.rect)
 
 def collisionBulletWall(bullet, map):
     tileWidth = map.tmxData.tilewidth
