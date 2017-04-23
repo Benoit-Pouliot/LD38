@@ -115,6 +115,7 @@ class GameSceneData:
         self.spritesHUD.add(self.HUD)
 
     def tileTypeToTileLife(self, tileType):
+        return 1
         if tileType == 53:
             return 4
         elif tileType == 51:

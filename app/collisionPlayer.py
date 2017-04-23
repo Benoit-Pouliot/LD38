@@ -189,10 +189,13 @@ class CollisionPlayer:
             item.kill()
 
     def collisionWithSpring(self, player, springGroup):
-        collisionList = pygame.sprite.spritecollide(player, springGroup, False)
+        collisionList = pygame.sprite.spritecollide(player, springGroup, False, self.collisionWithMasks)
         for spring in collisionList:
             spring.bounce()
             player.bounce(spring.bounceSpeed)
+
+    def collisionWithMasks(self, player, sprite):
+        return player.collisionMask.rect.colliderect(sprite.collisionMask.rect)
 
 def collisionBulletWall(bullet, map):
     tileWidth = map.tmxData.tilewidth
