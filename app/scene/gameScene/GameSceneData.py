@@ -34,6 +34,7 @@ class GameSceneData:
         self.localTmxData = TmxData(self.tmxData)
 
         self.solidGID = self.localTmxData.get_gidFromTileType(SOLID)
+        self.indestructibleGID = self.localTmxData.get_gidFromTileType(INDESTRUCTIBLE)
         self.ladderGID = self.localTmxData.get_gidFromTileType(LADDER)
 
         self.allSprites = pygame.sprite.Group()
