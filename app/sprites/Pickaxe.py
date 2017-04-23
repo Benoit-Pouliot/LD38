@@ -11,15 +11,18 @@ class Pickaxe(pygame.sprite.Sprite):
         self.imageOrig = pygame.image.load(os.path.join('img', nameImg))
         self.imageOrig = pygame.transform.scale(self.imageOrig, (16, 16))
         # self.imageOrig = pygame.transform.rotate(self.imageOrig, -45)
+        self.decaX = []
+        self.decaY = []
         if self.player.facingSide is RIGHT:
-            self.decaX = 13
+            self.decaX = [0, 13, 15, 13]
+            self.angle = [45, 0, -45, -70]
         else:
             self.imageOrig = pygame.transform.flip(self.imageOrig, True, False)
-            self.decaX = -13
-        self.decaY = -7
+            self.decaX = [0, -13, -15, -13]
+            self.angle = [-45, 0, 45, 70]
+        self.decaY = [-14, -3, 5, 15]
+        self.image = pygame.transform.rotate(self.imageOrig, self.angle[0])
 
-
-        self.image = self.imageOrig
         self.name = "pickaxe"
 
         self.rect = self.image.get_rect()
@@ -37,6 +40,11 @@ class Pickaxe(pygame.sprite.Sprite):
         self.powerx = 0
         self.powery = 0
 
+        self.iter = 0
+        self.iterChange = self.player.imageDigWaitNextImage
+        self.iterState = 0
+        self.iterStateMax = len(self.decaX)
+
 
     def dead(self):
         pass
@@ -45,19 +53,13 @@ class Pickaxe(pygame.sprite.Sprite):
         pass
 
     def updatePickaxe(self):
-        # mousePos = pygame.mouse.get_pos()
-        #
-        # diffx = mousePos[0]+self.mapData.cameraPlayer.view_rect.x-self.rect.centerx
-        # diffy = mousePos[1]+self.mapData.cameraPlayer.view_rect.y-self.rect.centery
-        #
-        # self.target.rect.centerx = TARGET_DISTANCE*(diffx)/self.vectorNorm(diffx,diffy) + self.rect.centerx
-        # self.target.rect.centery = TARGET_DISTANCE*(diffy)/self.vectorNorm(diffx,diffy) + self.rect.centery
 
-        self.rect.centerx = self.player.rect.centerx + self.decaX
-        self.rect.centery = self.player.rect.centery + self.decaY
+        if self.iter > self.iterChange:
+            self.iterState = (self.iterState+1) % self.iterStateMax
+            self.image = pygame.transform.rotate(self.imageOrig, self.angle[self.iterState])
+            self.iter = 0
 
-        # self.target.powerx = (diffx)/self.vectorNorm(diffx,diffy)
-        # self.target.powery = (diffy)/self.vectorNorm(diffx,diffy)
-        #
-        # angleRad = math.atan2(diffy, diffx)
-        # self.target.image = pygame.transform.rotate(self.target.imageOrig, -angleRad/math.pi*180)
+        self.rect.centerx = self.player.rect.centerx + self.decaX[self.iterState]
+        self.rect.centery = self.player.rect.centery + self.decaY[self.iterState]
+
+        self.iter = self.iter+1
