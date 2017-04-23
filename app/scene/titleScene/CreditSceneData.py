@@ -2,6 +2,7 @@ __author__ = 'Bobsleigh'
 
 # Imports
 import pygame
+import os
 
 from ldLib.GUI.Button import Button
 from ldLib.GUI.messageBox.MessageBox import MessageBox
@@ -21,20 +22,23 @@ class CreditSceneData:
 
         # background
         self.background = pygame.sprite.Sprite()
-        self.background.rect = pygame.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
-        self.background.image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.background.image.fill((0,0,255))
+        self.background.rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.background.image = pygame.image.load(os.path.join('img', 'titleScreen.png'))
+        self.background.rect = self.background.image.get_rect()
+
         self.spritesBackGround.add(self.background)
 
         self.player = None
         self.camera = None
 
         widthCreditBox = 0.5*SCREEN_WIDTH
-        heightCreditBox = 0.5*SCREEN_HEIGHT
+        heightCreditBox = 0.4*SCREEN_HEIGHT
 
-        self.createCreditBox(SCREEN_WIDTH/2-widthCreditBox/2, 2*SCREEN_HEIGHT / 5-heightCreditBox/2, widthCreditBox, heightCreditBox)
+        self.createCreditBox(SCREEN_WIDTH/2-widthCreditBox/2, 3*SCREEN_HEIGHT / 7, widthCreditBox, heightCreditBox)
 
-        self.backToTitleScreenButton = Button((0.5*SCREEN_WIDTH-250/2, 0.8*SCREEN_HEIGHT-25), (250, 50), 'Back to main menu',
+        buttonWidth = 0.55 * SCREEN_WIDTH - 100
+        self.backToTitleScreenButton = Button((SCREEN_WIDTH / 2 - buttonWidth / 2, 17 * SCREEN_HEIGHT / 20),
+                                              (buttonWidth, 50), 'Back to main menu',
                                               self.goToTitleScreen)
         self.spritesHUD.add(self.backToTitleScreenButton)
         self.notifySet.add(self.backToTitleScreenButton)
@@ -47,9 +51,7 @@ class CreditSceneData:
         self.textGoal.textList.append('Credit :')
         self.textGoal.textList.append('')
         self.textGoal.textList.append('Game and design : Bobsleigh\'s team')
-        self.textGoal.textList.append('')
         self.textGoal.textList.append('Graphics : Bobsleigh\'s team')
-        self.textGoal.textList.append('')
         self.textGoal.textList.append('Music : Bobsleigh\'s team')
         self.textGoal.textList.append('')
 

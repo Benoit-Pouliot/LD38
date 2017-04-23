@@ -2,6 +2,7 @@ __author__ = 'Bobsleigh'
 
 # Imports
 import pygame
+import os
 
 from ldLib.GUI.Button import Button
 from ldLib.GUI.messageBox.MessageBox import MessageBox
@@ -21,17 +22,20 @@ class InstructionSceneData:
 
         # background
         self.background = pygame.sprite.Sprite()
-        self.background.rect = pygame.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
-        self.background.image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.background.image.fill((50,0,0))
+        self.background.rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.background.image = pygame.image.load(os.path.join('img', 'titleScreen.png'))
+        self.background.rect = self.background.image.get_rect()
+
         self.spritesBackGround.add(self.background)
 
         self.player = None
         self.camera = None
 
-        self.createControlBox(60, SCREEN_HEIGHT / 10, 0.55 * SCREEN_WIDTH, 4 * SCREEN_HEIGHT / 5)
+        boxWidth = 0.55 * SCREEN_WIDTH
+        self.createControlBox(SCREEN_WIDTH/2-boxWidth/2, 3*SCREEN_HEIGHT / 7, boxWidth,2 * SCREEN_HEIGHT / 5)
 
-        self.backToTitleScreenButton = Button((520, 17 * SCREEN_HEIGHT / 20), (250, 50), 'Back to main menu',
+        buttonWidth = 0.55 * SCREEN_WIDTH-100
+        self.backToTitleScreenButton = Button((SCREEN_WIDTH/2-buttonWidth/2, 17 * SCREEN_HEIGHT / 20), (buttonWidth, 50), 'Back to main menu',
                                               self.goToTitleScreen)
         self.spritesHUD.add(self.backToTitleScreenButton)
         self.notifySet.add(self.backToTitleScreenButton)
