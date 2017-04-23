@@ -126,9 +126,9 @@ class Player(pygame.sprite.Sprite):
         self.springList = []
 
         self.target = Target(0, 0)
-        # invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
-        # invPix = invPix.convert_alpha()
-        # self.target.imageOrig = invPix
+        invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
+        invPix = invPix.convert_alpha()
+        self.target.imageOrig = invPix
         self.mapData.camera.add(self.target)
 
         self.LeftClickMode = PLAYER_DIG_MODE
