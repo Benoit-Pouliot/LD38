@@ -8,15 +8,20 @@ class Drill(pygame.sprite.Sprite):
 
         self.player = player
 
+        self.strength = 0
+
         if lvlDrill == 1:
             name1 = 'drillLvl1-a.png'
             name2 = 'drillLvl1-b.png'
+            self.strength = 1
         elif lvlDrill == 2:
             name1 = 'drillLvl2-a.png'
             name2 = 'drillLvl2-b.png'
+            self.strength = 10
         elif lvlDrill == 3:
             name1 = 'drillLvl3-a.png'
             name2 = 'drillLvl3-b.png'
+            self.strength = 100
         self.imageOrig = list()
         self.imageOrig.append(pygame.image.load(os.path.join('img', name1)))
         self.imageOrig.append(pygame.image.load(os.path.join('img', name2)))

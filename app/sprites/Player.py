@@ -501,7 +501,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.imageShapeDigRight[self.imageIterStateDig]
             else:
                 self.image = self.imageShapeDigLeft[self.imageIterStateDig]
-            self.pickaxeObj = Pickaxe(0, 0, self)
+            self.pickaxeObj = Pickaxe(0, 0, self,self.mapData.lvlPickaxe)
             self.mapData.camera.add(self.pickaxeObj)
 
         if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
@@ -517,13 +517,13 @@ class Player(pygame.sprite.Sprite):
             targetTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
 
             if targetTile == self.mapData.solidGID:
-                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > 1:
-                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > self.pickaxeObj.strength:
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= self.pickaxeObj.strength
                     self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
 
                     self.getGems(posX, posY)
-                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life = 0
 
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
@@ -570,7 +570,7 @@ class Player(pygame.sprite.Sprite):
             if self.drillObj is not None:
                 self.drillObj.kill()
                 self.drillObj = None
-            self.drillObj = Drill(0, 0, self, 1)
+            self.drillObj = Drill(0, 0, self, self.mapData.lvlDrill)
             self.mapData.camera.add(self.drillObj)
             pass
         if self.drillCooldown.value < self.drillCooldown.max and self.drillObj is not None:
@@ -585,13 +585,13 @@ class Player(pygame.sprite.Sprite):
             posY = self.rect.centery/self.mapData.tmxData.tileheight
             sideTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
             if sideTile == self.mapData.solidGID:
-                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > 1:
-                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > self.drillObj.strength:
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= self.drillObj.strength
                     self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
                     ## get the gems
                     self.getGems(posX, posY)
-                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life = 0
 
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0)
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0, COLLISION_LAYER)
@@ -633,7 +633,8 @@ class Player(pygame.sprite.Sprite):
             elif event.key == pygame.K_1:
                 self.LeftClickMode = PLAYER_DIG_MODE
             elif event.key == pygame.K_2:
-                self.LeftClickMode = PLAYER_DRILL_MODE
+                if self.mapData.lvlDrill is not 0:
+                    self.LeftClickMode = PLAYER_DRILL_MODE
             # elif event.key == pygame.K_3:
             #     self.LeftClickMode = PLAYER_DYNAMITE_MODE
 
