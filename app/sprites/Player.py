@@ -126,9 +126,9 @@ class Player(pygame.sprite.Sprite):
         self.springList = []
 
         self.target = Target(0, 0)
-        invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
-        invPix = invPix.convert_alpha()
-        self.target.imageOrig = invPix
+        # invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
+        # invPix = invPix.convert_alpha()
+        # self.target.imageOrig = invPix
         self.mapData.camera.add(self.target)
 
         self.LeftClickMode = PLAYER_DIG_MODE
@@ -415,17 +415,15 @@ class Player(pygame.sprite.Sprite):
 
     def createSpring(self):
         #self.stop()
+        self.destroyStackedSpring()
         if self.mapData.nbSpring > 0 and self.springCooldown.isZero:
-
 
             x = self.target.rect.x - (self.target.rect.x % self.mapData.tmxData.tileheight)
             y = self.target.rect.y + (self.mapData.tmxData.tileheight - (self.target.rect.y % self.mapData.tmxData.tileheight) )
 
-
-
             spring = Spring(x, y)
             spring.rect.y -= spring.rect.height
-            currentTile = self.mapData.tmxData.get_tile_gid(spring.rect.x/self.mapData.tmxData.tilewidth, spring.rect.y/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+            currentTile = self.mapData.localTmxData.get_tileTypeFromGid(self.mapData.tmxData.get_tile_gid(spring.rect.x/self.mapData.tmxData.tilewidth, spring.rect.y/self.mapData.tmxData.tileheight, COLLISION_LAYER))
             if currentTile == self.mapData.solidGID or currentTile == self.mapData.indestructibleGID:
                 spring.kill()
                 return
@@ -438,10 +436,31 @@ class Player(pygame.sprite.Sprite):
                 self.springList.append(spring)
                 self.springCooldown.start()
 
+    def destroyStackedSpring(self):
+        for spring in self.mapData.springGroup.sprites():
+            count = 0
+            for otherSpring in self.mapData.springGroup.sprites():
+                if spring.rect.x == otherSpring.rect.x and spring.rect.y == otherSpring.rect.y:
+                    count += 1
+                    if count == 2:
+                        spring.kill()
+                        break
+
+    def createLadder(self):
+        x = self.target.rect.centerx - (self.target.rect.centerx % self.mapData.tmxData.tileheight)
+        y = self.target.rect.centery + (self.mapData.tmxData.tileheight - (self.target.rect.centery % self.mapData.tmxData.tileheight) )
+
+        currentTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+
+        if self.mapData.nbLadder > 0 and currentTile != self.mapData.solidGID and currentTile != self.mapData.indestructibleGID and currentTile != self.mapData.ladderGID:
+            self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), LADDER_TILE)
+            self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), LADDER, COLLISION_LAYER)
+            self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+            self.mapData.nbLadder -= 1
+
+
     def bounce(self, speed):
         self.speedy = -speed
-
-
             # occupied = pygame.sprite.spritecollideany(barricade, self.mapData.enemyGroup)
             # if occupied is None:
             #     occupied = pygame.sprite.spritecollideany(barricade, self.mapData.obstacleGroup)
@@ -630,6 +649,9 @@ class Player(pygame.sprite.Sprite):
                 self.downPressed = True
             elif event.key == pygame.K_SPACE:
                 self.jump()
+            elif event.key == pygame.K_c:
+                self.createLadder()
+
             elif event.key == pygame.K_1:
                 self.LeftClickMode = PLAYER_DIG_MODE
             elif event.key == pygame.K_2:
