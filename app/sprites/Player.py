@@ -15,7 +15,35 @@ class Player(pygame.sprite.Sprite):
 
         self.name = "player"
 
-        self.imageBase=pygame.image.load(os.path.join('img', 'Pig.png'))
+        self.imageBase=pygame.image.load(os.path.join('img', 'gnome_v1.png'))
+
+        # Here we load all images
+        self.imageShapeStillRight = pygame.image.load(os.path.join('img', 'gnome_side_v2.png'))
+        self.imageShapeStillLeft = pygame.transform.flip(self.imageShapeStillRight, True, False)
+
+        self.imageShapeWalkRight = list()
+        self.imageShapeWalkRight.append(pygame.image.load(os.path.join('img', 'gnome_walk2.png')))
+        self.imageShapeWalkRight.append(self.imageShapeStillRight)
+        self.imageShapeWalkRight.append(pygame.image.load(os.path.join('img', 'gnome_walk1.png')))
+        self.imageShapeWalkRight.append(self.imageShapeStillRight)
+
+        self.imageShapeClimb = list()
+        self.imageShapeClimb.append(pygame.image.load(os.path.join('img', 'gnome_climb1.png')))
+        self.imageShapeClimb.append(pygame.image.load(os.path.join('img', 'gnome_climb2.png')))
+
+        self.imageShapeJumpRight = list()
+        self.imageShapeJumpRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe1.png')))
+        # self.imageShapeJumpRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe1.png')))
+
+
+        self.imageShapeWalkLeft = list()
+        for k in range(0, len(self.imageShapeWalkRight)):
+            self.imageShapeWalkLeft.append(pygame.transform.flip(self.imageShapeWalkRight[k], True, False))
+
+        self.imageShapeJumpLeft = list()
+        for k in range(0, len(self.imageShapeJumpRight)):
+            self.imageShapeJumpLeft.append(pygame.transform.flip(self.imageShapeJumpRight[k], True, False))
+
 
         self.imageShapeLeft = None
         self.imageShapeRight = None
@@ -88,6 +116,18 @@ class Player(pygame.sprite.Sprite):
         #self.soundBullet.set_volume(.3)
         #self.soundGetHit.set_volume(.3)
 
+        # Image counter
+        self.imageIterStateRight = 0
+        self.imageIterStateLeft = 0
+        self.imageWaitNextImage = 6
+        self.imageIterWait = 0
+        self.imageIterStateClimb = 0
+        self.imageClimbWaitNextImage = 16
+        self.imageClimbIterWait = 0
+        self.imageIterStateJump = 0
+        self.imageJumpWaitNextImage = 4
+        self.imageJumpIterWait = 0
+
         self.collisionMask = CollisionMask(self.rect.x + 3, self.rect.y, self.rect.width-6, self.rect.height)
 
     def setShapeImage(self):
@@ -105,12 +145,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
-        if self.speedx > 0:
-            self.image = self.imageShapeRight
-            self.facingSide = RIGHT
-        if self.speedx < 0:
-            self.image = self.imageShapeLeft
-            self.facingSide = LEFT
+        self.updateAnimation()
+        # if self.speedx > 0:
+        #     self.image = self.imageShapeRight
+        #     self.facingSide = RIGHT
+        # if self.speedx < 0:
+        #     self.image = self.imageShapeLeft
+        #     self.facingSide = LEFT
 
         self.invincibleUpdate()
         self.updateCollisionMask()
@@ -118,6 +159,64 @@ class Player(pygame.sprite.Sprite):
         self.updateJumpState()
         self.updateTarget()
         self.updateCooldowns()
+
+
+    def updateAnimation(self):
+        # Animation movement
+        self.imageIterWait = min(self.imageIterWait+1, 2*self.imageWaitNextImage)
+
+        # Hack, we add the iterator for climbing only in movement
+        if self.speedx != 0 or self.speedy != 0:
+            self.imageClimbIterWait = min(self.imageClimbIterWait+1, 2*self.imageClimbWaitNextImage)
+
+        # Hack, we add the iterator for jumping only in movement
+        if self.speedx != 0 or self.speedy != 0:
+            self.imageJumpIterWait = min(self.imageJumpIterWait+1, 2*self.imageJumpWaitNextImage)
+
+        if self.jumpState == CLIMBING:
+            if self.imageClimbIterWait >= self.imageClimbWaitNextImage:
+                self.imageIterStateClimb = (self.imageIterStateClimb+1) % len(self.imageShapeClimb)
+                self.image = self.imageShapeClimb[self.imageIterStateClimb]
+                self.imageClimbIterWait = 0
+        elif self.jumpState == JUMP and self.speedx >= -1 and self.speedx <= 1:
+            if self.imageJumpIterWait >= self.imageJumpWaitNextImage:
+                self.imageIterStateJump = (self.imageIterStateJump+1) % len(self.imageShapeJumpRight)
+                if self.facingSide == RIGHT:
+                    self.image = self.imageShapeJumpRight[self.imageIterStateJump]
+                else:
+                    self.image = self.imageShapeJumpLeft[self.imageIterStateJump]
+                self.imageJumpIterWait = 0
+        elif self.speedx == 0:
+            self.imageIterStateRight = 0
+            self.imageIterStateLeft = 0
+            if self.facingSide == RIGHT:
+                self.image = self.imageShapeStillRight
+            else:
+                self.image = self.imageShapeStillLeft
+        elif self.speedx <= 1 and self.speedx > 0:
+            self.imageIterStateRight = 0
+            self.imageIterStateLeft = 0
+            self.image = self.imageShapeStillRight
+            self.facingSide = RIGHT
+        elif self.speedx >= -1 and self.speedx < 0:
+            self.imageIterStateRight = 0
+            self.imageIterStateLeft = 0
+            self.image = self.imageShapeStillLeft
+            self.facingSide = LEFT
+        elif self.speedx > 1:
+            self.imageIterStateLeft = 0
+            self.facingSide = RIGHT
+            if self.imageIterWait >= self.imageWaitNextImage:
+                self.imageIterStateRight = (self.imageIterStateRight+1) % len(self.imageShapeWalkRight)
+                self.image = self.imageShapeWalkRight[self.imageIterStateRight]
+                self.imageIterWait = 0
+        else: # self.speedx < -1:
+            self.imageIterStateRight = 0
+            self.facingSide = LEFT
+            if self.imageIterWait >= self.imageWaitNextImage:
+                self.imageIterStateLeft = (self.imageIterStateLeft+1) % len(self.imageShapeWalkLeft)
+                self.image = self.imageShapeWalkLeft[self.imageIterStateLeft]
+                self.imageIterWait = 0
 
     def updateCooldowns(self):
         self.pickaxeCooldown.update()
