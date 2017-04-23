@@ -514,7 +514,7 @@ class Player(pygame.sprite.Sprite):
             if targetTile == self.mapData.solidGID:
                 if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > 1:
                     self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
-                    self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife )
+                    self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
                     self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
@@ -566,13 +566,15 @@ class Player(pygame.sprite.Sprite):
                 widthSide = -self.mapData.tmxData.tilewidth
             sideTile = self.mapData.tmxData.get_tile_gid((self.rect.centerx+widthSide)/self.mapData.tmxData.tilewidth, self.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
             if sideTile == self.mapData.solidGID:
-                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight] > 1:
-                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight] -= 1
+                if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > 1:
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
-                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight] -= 1
+                    self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= 1
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0)
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0, COLLISION_LAYER)
                     self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+                    self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
