@@ -148,8 +148,6 @@ class CollisionPlayer:
         upRightTileGid = map.tmxData.get_tile_gid(player.collisionMask.rect.right/tileWidth, (player.collisionMask.rect.top + player.speedy)/tileHeight, COLLISION_LAYER)
         upMidTileGid = map.tmxData.get_tile_gid(player.collisionMask.rect.centerx/tileWidth, (player.collisionMask.rect.top + player.speedy)/tileHeight, COLLISION_LAYER)
 
-
-
         if upLeftTileGid == self.map.solidGID or upLeftTileGid  == self.map.indestructibleGID or upRightTileGid == self.map.solidGID or upRightTileGid  == self.map.indestructibleGID or upMidTileGid == self.map.solidGID or upMidTileGid  == self.map.indestructibleGID:
             #Coller le player sur le plafond
             while map.tmxData.get_tile_gid((player.collisionMask.rect.left+1)/tileWidth, (player.collisionMask.rect.top)/tileHeight, COLLISION_LAYER) != self.map.solidGID and map.tmxData.get_tile_gid(player.collisionMask.rect.right/tileWidth, (player.collisionMask.rect.top)/tileHeight, COLLISION_LAYER) != self.map.solidGID:

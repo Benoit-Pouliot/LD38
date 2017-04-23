@@ -59,14 +59,20 @@ LEFT = 1
 UP = 2
 DOWN = 3
 
-#Collisions
+#LAYERS
 COLLISION_LAYER = 0
+TERRAIN_LAYER = 2
+
+#Collisions
 SOLID = 1 #Booléen de GID pour collision
 INDESTRUCTIBLE = 2
 SPRING = 3
 LADDER = 4
 SPIKE = 10
 NONE = 5 #Pour identifier qu'il n'y a eu aucune collision
+
+#Tile no
+EARTH = 53
 
 OBSTACLE = 100 #This is not a tile
 
