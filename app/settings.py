@@ -45,6 +45,8 @@ MOUSE_RIGHT = 3
 #Scenes self.nextScene commands, used to tell SceneHandler what next scene to run after this one ends
 TITLE_SCENE = 0
 GAME_SCENE = 1
+INSTRUCTION_SCENE = 911
+CREDIT_SCENE = 777
 
 # Sprite Layer
 SPRITE_LAYER = 4
@@ -124,7 +126,7 @@ HUD_FONT_COLOR = BLACK
 HUD_FONT_SIZE = 20
 HUD_HEIGHT = 40
 HUD_COLOR_1 = COLOR_MENU_1
-HUD_COLOR_2 = (128,0,0)
+HUD_COLOR_2 = COLOR_MENU_2
 
 FULL_LOAD_COLOR = (0,0,255)
 LOADING_COLOR = COLOR_MENU_2
