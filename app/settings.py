@@ -57,7 +57,7 @@ BACKGROUND_LAYER = 2
 RIGHT = 0
 LEFT = 1
 UP = 2
-DOWN = 3
+DOWN = 3w
 
 #Collisions
 COLLISION_LAYER = 0
