@@ -64,7 +64,7 @@ class Shop(pygame.sprite.Sprite):
     def addUpgrades(self):
         self.addUpgrade('spring','trempo1',self.buySpring,10,SHOP_REPEATABLE)
         self.addUpgrade('ladder', 'ladder', self.buyLadder, 150, SHOP_REPEATABLE)
-        self.addUpgrade('antiGravity', 'pig', self.buyAntiGravity, 50000, SHOP_REPEATABLE)
+        self.addUpgrade('antiGravity', 'antiGravity', self.buyAntiGravity, 50000, SHOP_REPEATABLE)
 
         self.addUpgrade('pickaxeLvl2', 'pickaxeLvl2', self.buyPickaxe2, 100, SHOP_AVAILABLE)
         self.addUpgrade('pickaxeLvl3', 'pickaxeLvl3', self.buyPickaxe3, 10000, SHOP_AVAILABLE)
