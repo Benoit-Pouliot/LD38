@@ -163,7 +163,7 @@ class CollisionPlayer:
                 player.upPressed = False
         elif upLeftTileGid == SPIKE or upRightTileGid == SPIKE:
             player.dead()
-        elif upLeftTileGid == LADDER or upRightTileGid == LADDER or upMidTileGid == LADDER:
+        elif upLeftTileGid == self.map.ladderGID or upRightTileGid == self.map.ladderGID or upMidTileGid == self.map.ladderGID:
             if player.jumpState != CLIMBING and player.name == "player":
                 player.jumpState = CLIMBING
                 player.speedx = 0
@@ -289,8 +289,8 @@ def printTopTile(tile):
         print("SPIKE")
     elif tile == SPRING:
         print("SPRING")
-    elif tile == LADDER:
-        print("LADDER")
+    elif tile == self.map.ladderGID:
+        print("self.map.ladderGID")
 
 def printJumpState(state):
     if state == GROUNDED:

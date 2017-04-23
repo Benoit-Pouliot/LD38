@@ -21,7 +21,7 @@ class GameSceneLogicHandler:
 
         #self.handleZoneCollision(self.player)
         self.collisionChecker.collisionAllSprites(self.player, self.data)
-
+        self.handleZoneCollision(self.player)
         self.checkShop()
         self.checkHighlight()
         self.data.allSprites.update()
@@ -31,8 +31,6 @@ class GameSceneLogicHandler:
 
     def handleSpriteTileCollision(self, sprite, data):
         if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
-            if TAG_MARIE == 1:
-                print(self.data.solidGID)
             collisionNotifySprite(sprite, self.data.solidGID, data)
 
 
@@ -81,6 +79,17 @@ class GameSceneLogicHandler:
                 sprite.speedx += FRICTION
             elif sprite.speedx < 0:
                 sprite.speedx = 0
+
+        if sprite.name == "player" and sprite.isFrictionApplied == True and sprite.jumpState == CLIMBING:
+            if sprite.speedy > 0 and sprite.speedy - FRICTION > 0:
+                sprite.speedy -= FRICTION
+            elif sprite.speedy > 0:
+                sprite.speedy = 0
+
+            if sprite.speedy < 0 and sprite.speedy + FRICTION < 0:
+                sprite.speedy += FRICTION
+            elif sprite.speedy < 0:
+                sprite.speedy = 0
 
     def checkHighlight(self):
         mousePos = pygame.mouse.get_pos()
