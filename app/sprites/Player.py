@@ -4,9 +4,10 @@ import os
 from app.settings import *
 from app.sprites.CollisionMask import CollisionMask
 from app.sprites.Target import Target
+from app.sprites.items.Spring import Spring
+
 from ldLib.tools.Cooldown import Cooldown
 import math
-
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, mapData):
@@ -66,15 +67,18 @@ class Player(pygame.sprite.Sprite):
         self.upPressed = False
         self.downPressed = False
         self.leftMousePressed = False
+        self.rightMousePressed = False
 
         self.mapData = mapData
 
         self.isAlive = True
+        self.springList = []
 
         self.target = Target(0, 0)
         self.mapData.camera.add(self.target)
 
         self.pickaxeCooldown = Cooldown(30)
+        self.springCooldown = Cooldown(30)
 
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
@@ -117,6 +121,7 @@ class Player(pygame.sprite.Sprite):
 
     def updateCooldowns(self):
         self.pickaxeCooldown.update()
+        self.springCooldown.update()
 
     def updateTarget(self):
         mousePos = pygame.mouse.get_pos()
@@ -220,6 +225,48 @@ class Player(pygame.sprite.Sprite):
             self.invincibleFrameCounter = [0,0]
         self.visualFlash()
 
+    def createSpring(self):
+        #self.stop()
+        if self.mapData.nbSpring > 0 and self.springCooldown.isZero:
+
+            x = self.target.rect.x - (self.target.rect.x % self.mapData.tmxData.tileheight)
+            y = self.target.rect.y + (self.mapData.tmxData.tileheight - (self.target.rect.y % self.mapData.tmxData.tileheight) )
+
+            spring = Spring(x, y)
+            spring.rect.y -= spring.rect.height
+            col = pygame.sprite.spritecollide(spring, self.mapData.springGroup, False)
+            if not col:
+                self.mapData.allSprites.add(spring)
+                self.mapData.springGroup.add(spring)
+                self.mapData.camera.add(spring)
+                self.mapData.nbSpring -= 1
+                self.springList.append(spring)
+                self.springCooldown.start()
+
+    def bounce(self, speed):
+        self.speedy = -speed
+
+
+            # occupied = pygame.sprite.spritecollideany(barricade, self.mapData.enemyGroup)
+            # if occupied is None:
+            #     occupied = pygame.sprite.spritecollideany(barricade, self.mapData.obstacleGroup)
+            #
+            # if occupied is None:
+            #     self.soundBarricade.play()
+            #     self.mapData.camera.add(barricade)
+            #     self.mapData.allSprites.add(barricade)
+            #     self.mapData.obstacleGroup.add(barricade)
+            #
+            #     self.mapData.allSprites.add(barricade.lifeBar)
+            #     self.mapData.camera.add(barricade.lifeBar, layer=CAMERA_HUD_LAYER)
+            #
+            #     self.barricadeCharges -= 1
+            #
+            #     if self.barricadeCooldown.isZero:
+            #         self.barricadeCooldown.start()
+            # else:
+            #     barricade.destroy()
+
     def dead(self):
         self.isAlive = False
 
@@ -311,3 +358,6 @@ class Player(pygame.sprite.Sprite):
             self.updateSpeedDown()
         if self.leftMousePressed:
             self.mine()
+        if self.rightMousePressed:
+            self.createSpring()
+

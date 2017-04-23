@@ -182,11 +182,19 @@ class CollisionPlayer:
             # self.soundControl.hurt()
             pass
 
+
+
     def pickUpItem(self, player, itemGroup, gameMemory):
         collisionList = pygame.sprite.spritecollide(player, itemGroup, False)
         for item in collisionList:
             gameMemory.registerItemPickedUp(item)
             item.kill()
+
+    def collisionWithSpring(self, player, springGroup):
+        collisionList = pygame.sprite.spritecollide(player, springGroup, False)
+        for spring in collisionList:
+            spring.bounce()
+            player.bounce(spring.bounceSpeed)
 
 def collisionBulletWall(bullet, map):
     tileWidth = map.tmxData.tilewidth

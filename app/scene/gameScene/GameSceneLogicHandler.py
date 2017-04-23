@@ -21,12 +21,15 @@ class GameSceneLogicHandler:
 
         #self.handleZoneCollision(self.player)
         self.collisionChecker.collisionAllSprites(self.player, self.data)
+        self.collisionChecker.collisionWithSpring(self.player, self.data.springGroup)
+        self.handleSprings()
 
         self.checkShop()
         self.checkHighlight()
         self.data.allSprites.update()
         self.data.spritesHUD.update()
         self.applyGravity(self.player)
+
         # self.handleSpriteTileCollision(self.player, self.data)
 
     def handleSpriteTileCollision(self, sprite, data):
@@ -99,3 +102,8 @@ class GameSceneLogicHandler:
                 if self.data.spritesHUD.has(sprites):
                     self.data.spritesHUD.remove(sprites)
                     self.data.notifySet.remove(sprites)
+
+    def handleSprings(self):
+        for spring in self.data.springGroup.sprites():
+            self.applyGravity(spring)
+            self.collisionChecker.collisionAllSprites(spring, self.data)
