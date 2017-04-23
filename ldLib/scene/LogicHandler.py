@@ -9,3 +9,4 @@ class LogicHandler:
     def handle(self):
         self.data.allSprites.update()
         self.data.spritesHUD.update()
+        self.data.spritesBackGround.update()

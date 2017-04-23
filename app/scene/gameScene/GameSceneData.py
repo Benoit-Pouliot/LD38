@@ -36,15 +36,10 @@ class GameSceneData:
         self.solidGID = self.localTmxData.get_gidFromTileType(SOLID)
         self.ladderGID = self.localTmxData.get_gidFromTileType(LADDER)
 
-
-        if TAG_BP:
-            self.localTmxData.addTileXYToListToChange((5*32,27*32), 0, 2)
-            self.localTmxData.addTileXYToListToChange((6*32,27*32), 0, 'Terrain_TL')
-            self.localTmxData.changeAllTileInList(self.cameraPlayer)
-
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
+        self.spritesBackGround = pygame.sprite.Group()
 
                 # if obj.type == "item":
                 #     item = iFactory.create(obj)
