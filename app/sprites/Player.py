@@ -584,7 +584,6 @@ class Player(pygame.sprite.Sprite):
                 mask.kill()
 
     def drill(self):
-        pass
         # We add the sprite
         if self.drillCooldown.value == self.drillCooldown.max-1:
             if self.facingSide == RIGHT:
@@ -613,16 +612,15 @@ class Player(pygame.sprite.Sprite):
             if sideTile == self.mapData.solidGID:
                 if self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life > self.drillStrength:
                     self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= self.drillStrength
-                    self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
+                    self.addRedTile((self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth, self.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
                     ## get the gems
                     self.getGems(posX, posY)
                     self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life = 0
-
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0)
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0, COLLISION_LAYER)
                     self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
-                    self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
+                    self.destroyRedTile((self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth, self.rect.centery//self.mapData.tmxData.tileheight)
 
     def getGems(self, x, y):
         targetTileType = self.mapData.localTmxData.get_tileType(x, y, TERRAIN_LAYER)
