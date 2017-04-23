@@ -140,6 +140,7 @@ class Shop(pygame.sprite.Sprite):
         if self.sold:
             self.data.lvlPickaxe += 1
             self.data.player.LeftClickMode = PLAYER_DIG_MODE
+            self.data.player.setStrength()
             self.sold = False
 
     def buyPickaxe3(self):
@@ -147,6 +148,7 @@ class Shop(pygame.sprite.Sprite):
         if self.sold:
             self.data.lvlPickaxe += 1
             self.data.player.LeftClickMode = PLAYER_DIG_MODE
+            self.data.player.setStrength()
             self.sold = False
 
     def buyDrill1(self):
@@ -154,6 +156,7 @@ class Shop(pygame.sprite.Sprite):
         if self.sold:
             self.data.lvlDrill += 1
             self.data.player.LeftClickMode = PLAYER_DRILL_MODE
+            self.data.player.setStrength()
             self.sold = False
 
     def buyDrill2(self):
@@ -161,6 +164,7 @@ class Shop(pygame.sprite.Sprite):
         if self.sold:
             self.data.lvlDrill += 1
             self.data.player.LeftClickMode = PLAYER_DRILL_MODE
+            self.data.player.setStrength()
             self.sold = False
 
     def buyDrill3(self):
@@ -168,18 +172,21 @@ class Shop(pygame.sprite.Sprite):
         if self.sold:
             self.data.lvlDrill += 1
             self.data.player.LeftClickMode = PLAYER_DRILL_MODE
+            self.data.player.setStrength()
             self.sold = False
 
     def buyDynamite1(self):
         self.buy('dynamiteLvl1')
         if self.sold:
             self.data.lvlDynamite += 1
+            self.data.player.setStrength()
             self.sold = False
 
     def buyDynamite2(self):
         self.buy('dynamiteLvl2')
         if self.sold:
             self.data.lvlDynamite += 1
+            self.data.player.setStrength()
             self.sold = False
 
     def doNothing(self):
