@@ -88,6 +88,7 @@ class GameSceneData:
         self.nbSpring = 200
         self.nbLadder = 10
         self.nbAntiGravity = 0
+        self.nbDynamite = 20
         self.lvlPickaxe = 1
         self.lvlDrill = 0
         self.lvlDynamite = 0

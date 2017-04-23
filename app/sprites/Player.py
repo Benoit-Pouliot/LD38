@@ -7,6 +7,7 @@ from app.sprites.Target import Target
 from app.sprites.Pickaxe import Pickaxe
 from app.sprites.Drill import Drill
 from app.sprites.items.Spring import Spring
+from app.sprites.items.Dynamite import Dynamite
 from app.sprites.RedTileMask import RedTileMask
 
 from ldLib.tools.Cooldown import Cooldown
@@ -126,9 +127,9 @@ class Player(pygame.sprite.Sprite):
         self.springList = []
 
         self.target = Target(0, 0)
-        invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
-        invPix = invPix.convert_alpha()
-        self.target.imageOrig = invPix
+        # invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
+        # invPix = invPix.convert_alpha()
+        # self.target.imageOrig = invPix
         self.mapData.camera.add(self.target)
 
         self.LeftClickMode = PLAYER_DIG_MODE
@@ -136,6 +137,7 @@ class Player(pygame.sprite.Sprite):
         self.pickaxeCooldown = Cooldown(DIG_COOLDOWN)
         self.drillCooldown = Cooldown(DRILL_COOLDOWN)
         self.springCooldown = Cooldown(30)
+        self.dynamiteCooldown = Cooldown(30)
 
         self.pickaxeObj = None
         self.drillObj = None
@@ -318,8 +320,8 @@ class Player(pygame.sprite.Sprite):
             self.drillObj.kill()
             self.drillObj = None
         self.drillCooldown.update()
-
         self.springCooldown.update()
+        self.dynamiteCooldown.update()
 
     def updateTarget(self):
         mousePos = pygame.mouse.get_pos()
@@ -468,6 +470,24 @@ class Player(pygame.sprite.Sprite):
             self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
             self.mapData.nbLadder -= 1
 
+    def createDynamite(self):
+        if self.mapData.nbDynamite > 0 and self.dynamiteCooldown.isZero:
+            x = self.target.rect.centerx
+            y = self.target.rect.centery
+
+            currentTile = self.mapData.tmxData.get_tile_gid(x/self.mapData.tmxData.tilewidth, y/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+
+            if currentTile != self.mapData.solidGID and currentTile != self.mapData.indestructibleGID:
+                dynamite = Dynamite(x, y, self.mapData)
+                dynamite.rect.centerx = x
+                dynamite.rect.centery = y
+
+                col = pygame.sprite.spritecollide(dynamite, self.mapData.springGroup, False)
+                if not col:
+                    self.mapData.allSprites.add(dynamite)
+                    self.mapData.camera.add(dynamite)
+                    self.mapData.nbDynamite -= 1
+                    self.dynamiteCooldown.start()
 
     def bounce(self, speed):
         self.speedy = -speed
@@ -614,7 +634,7 @@ class Player(pygame.sprite.Sprite):
                     self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life -= self.drillStrength
                     self.addRedTile((self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth, self.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].maxLife)
                 else:
-                    ## get the gems
+                    ## get the gems1
                     self.getGems(posX, posY)
                     self.mapData.tileLife[(self.rect.centerx+widthSide)//self.mapData.tmxData.tilewidth][self.rect.centery//self.mapData.tmxData.tileheight].life = 0
                     self.mapData.localTmxData.addTileXYToListToChange(((self.rect.centerx+widthSide),self.rect.centery), 0)
@@ -683,7 +703,8 @@ class Player(pygame.sprite.Sprite):
                 self.jump()
             elif event.key == pygame.K_c:
                 self.createLadder()
-
+            elif event.key == pygame.K_v:
+                self.createDynamite()
             elif event.key == pygame.K_1:
                 self.LeftClickMode = PLAYER_DIG_MODE
             elif event.key == pygame.K_2:
