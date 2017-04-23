@@ -1,8 +1,8 @@
 from app.settings import *
 from app.scene.titleScene.TitleSceneData import TitleSceneData
 from app.scene.titleScene.TitleSceneLogicHandler import TitleSceneLogicHandler
-# from app.scene.whiteTitleScene.WhiteTitleSceneData import WhiteTitleSceneData
-# from app.scene.whiteTitleScene.WhiteTitleSceneLogicHandler import WhiteTitleSceneLogicHandler
+from app.scene.titleScene.InstructionSceneData import InstructionSceneData
+from app.scene.titleScene.CreditSceneData import CreditSceneData
 from app.scene.gameScene.GameSceneLogicHandler import GameSceneLogicHandler
 from app.scene.gameScene.GameSceneData import GameSceneData
 
@@ -31,6 +31,12 @@ class SceneHandler:
         # When we exit the scene, this code executes
         if self.runningScene.nextScene == TITLE_SCENE:
             self.gameData.data = TitleSceneData()
+            self.runningScene = Scene(self.screen, self.gameData, TitleSceneLogicHandler(self.gameData))
+        elif self.runningScene.nextScene == INSTRUCTION_SCENE:
+            self.gameData.data = InstructionSceneData()
+            self.runningScene = Scene(self.screen, self.gameData, TitleSceneLogicHandler(self.gameData))
+        elif self.runningScene.nextScene == CREDIT_SCENE:
+            self.gameData.data = CreditSceneData()
             self.runningScene = Scene(self.screen, self.gameData, TitleSceneLogicHandler(self.gameData))
         elif self.runningScene.nextScene == GAME_SCENE:
 

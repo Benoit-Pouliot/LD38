@@ -33,10 +33,20 @@ class TitleSceneData:
         self.createStartMenu()
 
     def createStartMenu(self):
-        self.startGameButton = Button((400, 5 * SCREEN_HEIGHT / 20), (300, 50), 'Go to white Title Screen',
+        self.startGameButton = Button((400, 6 * SCREEN_HEIGHT / 20), (300, 50), 'Start game',
                                        self.startGame)
         self.spritesHUD.add(self.startGameButton)
         self.notifySet.add(self.startGameButton)
+
+        self.instructionButton = Button((400, 9 * SCREEN_HEIGHT / 20), (300, 50), 'Instruction',
+                                      self.goToInstruction)
+        self.spritesHUD.add(self.instructionButton)
+        self.notifySet.add(self.instructionButton)
+
+        self.creditButton = Button((400, 12 * SCREEN_HEIGHT / 20), (300, 50), 'Credit',
+                                      self.goToCredit)
+        self.spritesHUD.add(self.creditButton)
+        self.notifySet.add(self.creditButton)
 
         self.exitButton = Button((400, 15 * SCREEN_HEIGHT / 20), (300, 50), 'Exit', sys.exit)
         self.spritesHUD.add(self.exitButton)
@@ -44,3 +54,9 @@ class TitleSceneData:
 
     def startGame(self):
         self.nextScene = GAME_SCENE
+
+    def goToInstruction(self):
+        self.nextScene = INSTRUCTION_SCENE
+
+    def goToCredit(self):
+        self.nextScene = CREDIT_SCENE
