@@ -48,6 +48,7 @@ class GameSceneData:
 
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
+        self.redTileMaskGroup = pygame.sprite.Group()
         self.springGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
         self.spritesBackGround = pygame.sprite.Group()
@@ -115,12 +116,17 @@ class GameSceneData:
         self.spritesHUD.add(self.HUD)
 
     def tileTypeToTileLife(self, tileType):
-        return 1
+        #return TileLife(1)
         if tileType == 53:
-            return 4
+            return TileLife(4)
         elif tileType == 51:
-            return 7
+            return TileLife(7)
         elif tileType == 52:
-            return 12
+            return TileLife(12)
         else:
-            return 1
+            return TileLife(1)
+
+class TileLife:
+    def __init__(self, maxLife):
+        self.maxLife = maxLife
+        self.life = maxLife

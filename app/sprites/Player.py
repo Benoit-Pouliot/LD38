@@ -6,6 +6,7 @@ from app.sprites.CollisionMask import CollisionMask
 from app.sprites.Target import Target
 from app.sprites.Pickaxe import Pickaxe
 from app.sprites.items.Spring import Spring
+from app.sprites.RedTileMask import RedTileMask
 
 from ldLib.tools.Cooldown import Cooldown
 import math
@@ -466,13 +467,35 @@ class Player(pygame.sprite.Sprite):
                 self.pickaxeObj = None
             targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
             if targetTile == self.mapData.solidGID:
-                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight] > 1:
-                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight] -= 1
+                if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > 1:
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
+                    self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife )
                 else:
-                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight] -= 1
+                    self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= 1
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
                     self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0, COLLISION_LAYER)
                     self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+                    self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
+
+    def addRedTile(self, posx, posy, life, maxLife):
+        x = posx * self.mapData.tmxData.tilewidth
+        y = posy * self.mapData.tmxData.tileheight
+
+        for mask in self.mapData.redTileMaskGroup.sprites():
+            if mask.rect.x == x and mask.rect.y == y and mask.life > life:
+                mask.kill()
+
+        redTileMask = RedTileMask(x, y, life, maxLife)
+        self.mapData.redTileMaskGroup.add(redTileMask)
+        self.mapData.camera.add(redTileMask)
+
+    def destroyRedTile(self, posx, posy):
+        x = posx * self.mapData.tmxData.tilewidth
+        y = posy * self.mapData.tmxData.tileheight
+
+        for mask in self.mapData.redTileMaskGroup.sprites():
+            if mask.rect.x == x and mask.rect.y == y:
+                mask.kill()
 
     def notify(self, event):
         if event.type == pygame.KEYDOWN:
