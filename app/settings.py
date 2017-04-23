@@ -49,6 +49,7 @@ GAME_SCENE = 1
 # Sprite Layer
 SPRITE_LAYER = 4
 CAMERA_HUD_LAYER = 5
+BACKGROUND_LAYER = 2
 
 #Facing Sides
 RIGHT = 0

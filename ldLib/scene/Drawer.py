@@ -8,7 +8,10 @@ class Drawer:
         self.clock = pygame.time.Clock()
         self.FPS = FPS
 
-    def draw(self, screen, sprites, spritesHUD, player):
+    def draw(self, screen, sprites, spritesHUD, spritesBackGround, player):
+
+        spritesBackGround.draw(screen)
+
         if isinstance(sprites, pygame.sprite.Group):
             sprites.draw(screen)
         elif isinstance(sprites, pyscroll.PyscrollGroup) and player != None:

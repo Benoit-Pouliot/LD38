@@ -18,13 +18,14 @@ class TitleSceneData:
         self.notifySet = weakref.WeakSet()
         self.allSprites = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
+        self.spritesBackGround = pygame.sprite.Group()
 
-        # Création du background
+        # background
         self.background = pygame.sprite.Sprite()
         self.background.rect = pygame.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
         self.background.image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.background.image.fill((50,50,50))
-        self.allSprites.add(self.background)
+        self.background.image.fill((0,50,50))
+        self.spritesBackGround.add(self.background)
 
         self.player = None
         self.camera = None

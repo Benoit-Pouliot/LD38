@@ -39,6 +39,7 @@ class GameSceneData:
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
+        self.spritesBackGround = pygame.sprite.Group()
 
                 # if obj.type == "item":
                 #     item = iFactory.create(obj)

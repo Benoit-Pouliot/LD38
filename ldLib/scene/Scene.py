@@ -35,9 +35,9 @@ class Scene:
             self.eventHandler.eventHandle(self.data.notifySet)
             self.logicHandler.handle()
             if self.data.camera == None:
-                self.drawer.draw(self.screen, self.data.allSprites, self.data.spritesHUD, self.player)
+                self.drawer.draw(self.screen, self.data.allSprites, self.data.spritesHUD, self.data.spritesBackGround, self.player)
             else:
-                self.drawer.draw(self.screen, self.data.camera, self.data.spritesHUD, self.player)
+                self.drawer.draw(self.screen, self.data.camera, self.data.spritesHUD, self.data.spritesBackGround, self.player)
             self.nextScene = self.data.nextScene
             if self.nextScene != None:
                 self.sceneRunning = False

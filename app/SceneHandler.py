@@ -33,6 +33,7 @@ class SceneHandler:
             self.gameData.data = TitleSceneData()
             self.runningScene = Scene(self.screen, self.gameData, TitleSceneLogicHandler(self.gameData))
         elif self.runningScene.nextScene == GAME_SCENE:
+
             if TAG_BP == 0:
                 self.gameData.data = GameSceneData("example_tiled", "InZone_01")
             else:
