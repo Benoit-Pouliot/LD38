@@ -4,6 +4,7 @@ import os
 from app.settings import *
 from app.sprites.CollisionMask import CollisionMask
 from app.sprites.Target import Target
+from app.sprites.Pickaxe import Pickaxe
 from app.sprites.items.Spring import Spring
 
 from ldLib.tools.Cooldown import Cooldown
@@ -27,6 +28,12 @@ class Player(pygame.sprite.Sprite):
         self.imageShapeWalkRight.append(pygame.image.load(os.path.join('img', 'gnome_walk1.png')))
         self.imageShapeWalkRight.append(self.imageShapeStillRight)
 
+        self.imageShapeDigRight = list()
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe1.png')))
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe2.png')))
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_pickaxe3.png')))
+        self.imageShapeDigRight.append(pygame.image.load(os.path.join('img', 'gnome_walk1.png')))
+
         self.imageShapeClimb = list()
         self.imageShapeClimb.append(pygame.image.load(os.path.join('img', 'gnome_climb1.png')))
         self.imageShapeClimb.append(pygame.image.load(os.path.join('img', 'gnome_climb2.png')))
@@ -39,6 +46,10 @@ class Player(pygame.sprite.Sprite):
         self.imageShapeWalkLeft = list()
         for k in range(0, len(self.imageShapeWalkRight)):
             self.imageShapeWalkLeft.append(pygame.transform.flip(self.imageShapeWalkRight[k], True, False))
+
+        self.imageShapeDigLeft = list()
+        for k in range(0, len(self.imageShapeDigRight)):
+            self.imageShapeDigLeft.append(pygame.transform.flip(self.imageShapeDigRight[k], True, False))
 
         self.imageShapeJumpLeft = list()
         for k in range(0, len(self.imageShapeJumpRight)):
@@ -103,10 +114,15 @@ class Player(pygame.sprite.Sprite):
         self.springList = []
 
         self.target = Target(0, 0)
+        invPix = pygame.Surface([1,1], pygame.SRCALPHA, 32)
+        invPix = invPix.convert_alpha()
+        self.target.imageOrig = invPix
         self.mapData.camera.add(self.target)
 
-        self.pickaxeCooldown = Cooldown(30)
+        self.pickaxeCooldown = Cooldown(28)
         self.springCooldown = Cooldown(30)
+
+        self.pickaxeObj = None
 
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
@@ -121,9 +137,15 @@ class Player(pygame.sprite.Sprite):
         self.imageIterStateLeft = 0
         self.imageWaitNextImage = 6
         self.imageIterWait = 0
+
+        self.imageIterStateDig = 0
+        self.imageDigWaitNextImage = 7
+        self.imageDigIterWait = 0
+
         self.imageIterStateClimb = 0
         self.imageClimbWaitNextImage = 16
         self.imageClimbIterWait = 0
+
         self.imageIterStateJump = 0
         self.imageJumpWaitNextImage = 4
         self.imageJumpIterWait = 0
@@ -175,7 +197,24 @@ class Player(pygame.sprite.Sprite):
         if self.speedx != 0 or self.speedy != 0:
             self.imageJumpIterWait = min(self.imageJumpIterWait+1, 2*self.imageJumpWaitNextImage)
 
-        if self.jumpState == CLIMBING:
+        # Hack
+        if self.pickaxeCooldown.isZero:
+            self.imageIterStateDig = 0
+            self.imageDigIterWait = 0
+
+        # only if in digging
+        if not self.pickaxeCooldown.isZero:
+            if self.imageDigIterWait >= self.imageDigWaitNextImage:
+                if self.facingSide == RIGHT:
+                    self.imageIterStateDig = (self.imageIterStateDig+1) % len(self.imageShapeDigRight)
+                    self.image = self.imageShapeDigRight[self.imageIterStateDig]
+                else:
+                    self.imageIterStateDig = (self.imageIterStateDig+1) % len(self.imageShapeDigRight)
+                    self.image = self.imageShapeDigLeft[self.imageIterStateDig]
+                self.imageDigIterWait = 0
+            else:
+                self.imageDigIterWait = self.imageDigIterWait+1
+        elif self.jumpState == CLIMBING:
             if self.imageClimbIterWait >= self.imageClimbWaitNextImage:
                 self.imageIterStateClimb = (self.imageIterStateClimb+1) % len(self.imageShapeClimb)
                 self.image = self.imageShapeClimb[self.imageIterStateClimb]
@@ -402,7 +441,18 @@ class Player(pygame.sprite.Sprite):
             self.visualFlash()
 
     def mine(self):
+
+        # We add the sprite
+        if self.pickaxeCooldown.value == self.pickaxeCooldown.max-1:
+            self.pickaxeObj = Pickaxe(0, 0, self)
+            self.mapData.camera.add(self.pickaxeObj)
+            pass
+        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
+            self.pickaxeObj.updatePickaxe()
         if self.pickaxeCooldown.value == 1:
+            if self.pickaxeObj is not None:
+                self.pickaxeObj.kill()
+                self.pickaxeObj = None
             targetTile = self.mapData.tmxData.get_tile_gid(self.target.rect.centerx/self.mapData.tmxData.tilewidth, self.target.rect.centery/self.mapData.tmxData.tileheight, COLLISION_LAYER)
             if targetTile == self.mapData.solidGID:
                 self.mapData.localTmxData.addTileXYToListToChange((self.target.rect.centerx,self.target.rect.centery), 0)
