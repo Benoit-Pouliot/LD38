@@ -39,4 +39,7 @@ class SceneHandler:
             else:
                 self.gameData.data = GameSceneData("tiled_map1", "InZone_01")
 
+            if TAG_MARIE == 1:
+                self.gameData.data = GameSceneData("tiled_map1", "InZone_01")
+
             self.runningScene = Scene(self.screen, self.gameData, GameSceneLogicHandler(self.gameData))
