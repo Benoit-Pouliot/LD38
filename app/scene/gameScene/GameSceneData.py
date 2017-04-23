@@ -84,7 +84,7 @@ class GameSceneData:
         self.lvlDynamite = 0
 
         if TAG_MARIE == 1:
-            self.money = 12345678
+            self.money = 123456
             self.nbSpring = 3
             self.nbLadder = 2
             self.nbAntiGravity = 1

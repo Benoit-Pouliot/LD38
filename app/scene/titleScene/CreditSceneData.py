@@ -47,7 +47,6 @@ class CreditSceneData:
         self.textGoal = MessageBox(x,y,width,height)
         self.textGoal.textList.append('For Ludum Dare 38')
         self.textGoal.textList.append('')
-        self.textGoal.textList.append('')
         self.textGoal.textList.append('Credit :')
         self.textGoal.textList.append('')
         self.textGoal.textList.append('Game and design : Bobsleigh\'s team')
