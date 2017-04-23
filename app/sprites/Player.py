@@ -119,7 +119,7 @@ class Player(pygame.sprite.Sprite):
         self.target.imageOrig = invPix
         self.mapData.camera.add(self.target)
 
-        self.pickaxeCooldown = Cooldown(28)
+        self.pickaxeCooldown = Cooldown(DIG_COOLDOWN)
         self.springCooldown = Cooldown(30)
 
         self.pickaxeObj = None
@@ -139,7 +139,7 @@ class Player(pygame.sprite.Sprite):
         self.imageIterWait = 0
 
         self.imageIterStateDig = 0
-        self.imageDigWaitNextImage = 7
+        self.imageDigWaitNextImage = int(DIG_COOLDOWN/4)
         self.imageDigIterWait = 0
 
         self.imageIterStateClimb = 0
@@ -444,6 +444,10 @@ class Player(pygame.sprite.Sprite):
 
         # We add the sprite
         if self.pickaxeCooldown.value == self.pickaxeCooldown.max-1:
+            if self.facingSide == RIGHT:
+                self.image = self.imageShapeDigRight[self.imageIterStateDig]
+            else:
+                self.image = self.imageShapeDigLeft[self.imageIterStateDig]
             self.pickaxeObj = Pickaxe(0, 0, self)
             self.mapData.camera.add(self.pickaxeObj)
             pass
