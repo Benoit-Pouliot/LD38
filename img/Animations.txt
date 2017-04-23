@@ -2,3 +2,4 @@ Gnome qui marche : gnome_side_v2 + gnome_walk1 + gnome_side_v2 + gnome_walk2
 Gnome Pickaxe : gnome_pickaxe1 + gnome_pickaxe2 + gnome_pickaxe3
 Gnome Climb: gnome_climb1 + gnome_climb2
 Trempoline: trempo1 + trempo2 + trempo1 + trempo3
+Drill: DrillLvl1-a + DrillLvl1-b

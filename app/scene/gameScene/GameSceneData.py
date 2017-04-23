@@ -36,16 +36,11 @@ class GameSceneData:
         self.solidGID = self.localTmxData.get_gidFromTileType(SOLID)
         self.ladderGID = self.localTmxData.get_gidFromTileType(LADDER)
 
-
-        if TAG_BP:
-            self.localTmxData.addTileXYToListToChange((5*32,27*32), 0, 2)
-            self.localTmxData.addTileXYToListToChange((6*32,27*32), 0, 'Terrain_TL')
-            self.localTmxData.changeAllTileInList(self.cameraPlayer)
-
         self.allSprites = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
         self.springGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
+        self.spritesBackGround = pygame.sprite.Group()
 
                 # if obj.type == "item":
                 #     item = iFactory.create(obj)
@@ -78,11 +73,14 @@ class GameSceneData:
         self.shop = Shop(self)
         self.activateShop = False
 
-        # Player invetory
+        # Player inventory
         self.money = 0
         self.nbSpring = 200
         self.nbLadder = 0
         self.nbAntiGravity = 0
+        self.lvlPickaxe = 1
+        self.lvlDrill = 0
+        self.lvlDynamite = 0
 
         if TAG_MARIE == 1:
             self.money = 12345678
