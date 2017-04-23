@@ -371,11 +371,18 @@ class Player(pygame.sprite.Sprite):
         #self.stop()
         if self.mapData.nbSpring > 0 and self.springCooldown.isZero:
 
+
             x = self.target.rect.x - (self.target.rect.x % self.mapData.tmxData.tileheight)
             y = self.target.rect.y + (self.mapData.tmxData.tileheight - (self.target.rect.y % self.mapData.tmxData.tileheight) )
 
+
+
             spring = Spring(x, y)
             spring.rect.y -= spring.rect.height
+            currentTile = self.mapData.tmxData.get_tile_gid(spring.rect.x/self.mapData.tmxData.tilewidth, spring.rect.y/self.mapData.tmxData.tileheight, COLLISION_LAYER)
+            if currentTile == self.mapData.solidGID or currentTile == self.mapData.indestructibleGID:
+                spring.kill()
+                return
             col = pygame.sprite.spritecollide(spring, self.mapData.springGroup, False)
             if not col:
                 self.mapData.allSprites.add(spring)
