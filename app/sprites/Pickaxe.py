@@ -54,6 +54,7 @@ class Pickaxe(pygame.sprite.Sprite):
 
     def updatePickaxe(self):
 
+        self.iter = self.iter+1
         if self.iter > self.iterChange:
             self.iterState = (self.iterState+1) % self.iterStateMax
             self.image = pygame.transform.rotate(self.imageOrig, self.angle[self.iterState])
@@ -62,4 +63,3 @@ class Pickaxe(pygame.sprite.Sprite):
         self.rect.centerx = self.player.rect.centerx + self.decaX[self.iterState]
         self.rect.centery = self.player.rect.centery + self.decaY[self.iterState]
 
-        self.iter = self.iter+1
