@@ -48,11 +48,6 @@ GAME_SCENE = 1
 INSTRUCTION_SCENE = 911
 CREDIT_SCENE = 777
 
-# Sprite Layer
-SPRITE_LAYER = 4
-CAMERA_HUD_LAYER = 5
-BACKGROUND_LAYER = 2
-
 #Facing Sides
 RIGHT = 0
 LEFT = 1
@@ -62,6 +57,8 @@ DOWN = 3
 #LAYERS
 COLLISION_LAYER = 0
 TERRAIN_LAYER = 2
+SPRITE_LAYER = 3
+CAMERA_HUD_LAYER = 4
 
 #Collisions
 SOLID = 1 #Booléen de GID pour collision
@@ -123,6 +120,32 @@ PLAYER_DYNAMITE_MODE = 1
 # Some CD settings
 DIG_COOLDOWN = 20
 DRILL_COOLDOWN = 10
+
+# Info for gems numbers on terain_set
+NB_TSET = 50
+ID_GEM = {1: 'GOLD1',
+          7: 'GOLD2',
+          2: 'PINK1',
+          9: 'PINK1',
+          8: 'PINK2',
+          27: 'PINK2',
+          15: 'GREEN1',
+          25: 'GREEN1',
+          20: 'GREEN2',
+          21: 'GREEN2',
+          31: 'RED1',
+          26: 'RED2'}
+
+# Values of gems
+VAL_GOLD1 = 5
+VAL_GOLD2 = 10
+VAL_PINK1 = 25
+VAL_PINK2 = 50
+VAL_GREEN1 = 100
+VAL_GREEN2 = 200
+VAL_RED1 = 1000
+VAL_RED2 = 2000
+
 
 #GUI settings
 DIALOG_TEXT_SIZE = 20
