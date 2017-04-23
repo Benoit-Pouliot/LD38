@@ -426,7 +426,7 @@ class Player(pygame.sprite.Sprite):
 
             spring = Spring(x, y)
             spring.rect.y -= spring.rect.height
-            currentTile = self.mapData.localTmxData.get_tileTypeFromGid(self.mapData.tmxData.get_tile_gid(spring.rect.x/self.mapData.tmxData.tilewidth, spring.rect.y/self.mapData.tmxData.tileheight, COLLISION_LAYER))
+            currentTile = self.mapData.tmxData.get_tile_gid(spring.rect.x/self.mapData.tmxData.tilewidth, spring.rect.y/self.mapData.tmxData.tileheight, COLLISION_LAYER)
             if currentTile == self.mapData.solidGID or currentTile == self.mapData.indestructibleGID:
                 spring.kill()
                 return
