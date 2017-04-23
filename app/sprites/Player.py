@@ -155,11 +155,11 @@ class Player(pygame.sprite.Sprite):
         self.imageIterWait = 0
 
         self.imageIterStateDig = 0
-        self.imageDigWaitNextImage = int(DIG_COOLDOWN/4)
+        self.imageDigWaitNextImage = DIG_COOLDOWN//4
         self.imageDigIterWait = 0
 
         self.imageIterStateDrill = 0
-        self.imageDrillWaitNextImage = int(DRILL_COOLDOWN/4)
+        self.imageDrillWaitNextImage = DRILL_COOLDOWN//4
         self.imageDrillIterWait = 0
 
         self.imageIterStateClimb = 0
@@ -495,17 +495,6 @@ class Player(pygame.sprite.Sprite):
 
     def mine(self):
 
-        # We add the sprite
-        if self.pickaxeCooldown.value == self.pickaxeCooldown.max-1:
-            if self.facingSide == RIGHT:
-                self.image = self.imageShapeDigRight[self.imageIterStateDig]
-            else:
-                self.image = self.imageShapeDigLeft[self.imageIterStateDig]
-            self.pickaxeObj = Pickaxe(0, 0, self)
-            self.mapData.camera.add(self.pickaxeObj)
-
-        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
-            self.pickaxeObj.updatePickaxe()
         if self.pickaxeCooldown.value == 1:
             if self.pickaxeObj is not None:
                 self.pickaxeObj.kill()
@@ -530,7 +519,14 @@ class Player(pygame.sprite.Sprite):
                     self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
                     self.destroyRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight)
 
-        if self.pickaxeCooldown.value < self.pickaxeCooldown.max and self.pickaxeObj is not None:
+            if self.facingSide == RIGHT:
+                self.image = self.imageShapeDigRight[self.imageIterStateDig]
+            else:
+                self.image = self.imageShapeDigLeft[self.imageIterStateDig]
+            self.pickaxeObj = Pickaxe(0, 0, self)
+            self.mapData.camera.add(self.pickaxeObj)
+
+        if self.pickaxeCooldown.value < self.pickaxeCooldown.max-1 and self.pickaxeObj is not None:
             self.pickaxeObj.updatePickaxe()
         if self.pickaxeCooldown.value == 1:
             if self.pickaxeObj is not None:
@@ -572,9 +568,10 @@ class Player(pygame.sprite.Sprite):
                 self.drillObj = None
             self.drillObj = Drill(0, 0, self, 1)
             self.mapData.camera.add(self.drillObj)
-            pass
-        if self.drillCooldown.value < self.drillCooldown.max and self.drillObj is not None:
+
+        if self.drillCooldown.value < self.drillCooldown.max-1 and self.drillObj is not None:
             self.drillObj.updateDrill()
+
         if self.drillCooldown.value == 1:
             if self.facingSide == RIGHT:
                 widthSide = self.mapData.tmxData.tilewidth

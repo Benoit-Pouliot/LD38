@@ -40,7 +40,7 @@ class Pickaxe(pygame.sprite.Sprite):
         self.powerx = 0
         self.powery = 0
 
-        self.iter = 0
+        self.iter = 2
         self.iterChange = self.player.imageDigWaitNextImage
         self.iterState = 0
         self.iterStateMax = len(self.decaX)
