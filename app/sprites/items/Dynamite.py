@@ -7,6 +7,7 @@ from ldLib.animation.Animation import Animation
 from ldLib.tools.Cooldown import Cooldown
 from app.settings import *
 from random import randint
+from app.sprites.Explosion import Explosion
 
 class Dynamite(pygame.sprite.Sprite):
     def __init__(self, x, y, mapData):
@@ -88,4 +89,10 @@ class Dynamite(pygame.sprite.Sprite):
                     self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0, COLLISION_LAYER)
 
         self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+
+        explosion = Explosion(self.rect.midbottom[0], self.rect.midbottom[1], 1)
+
+        self.mapData.camera.add(explosion)
+        self.mapData.allSprites.add(explosion)
+
         self.kill()
