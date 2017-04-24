@@ -88,6 +88,7 @@ class GameSceneData:
         self.nbSpring = 200
         self.nbLadder = 10
         self.nbAntiGravity = 0
+        self.nbDynamite = 20
         self.lvlPickaxe = 1
         self.lvlDrill = 0
         self.lvlDynamite = 0
@@ -97,6 +98,15 @@ class GameSceneData:
             self.nbSpring = 10
             self.nbLadder = 10
             self.nbAntiGravity = 10
+            self.lvlPickaxe = 1
+            self.lvlDrill = 1
+            self.lvlDynamite = 1
+
+        if TAG_BP:
+            self.money = 100000
+            self.nbSpring = 300
+            self.nbLadder = 200
+            self.nbAntiGravity = 100
             self.lvlPickaxe = 1
             self.lvlDrill = 1
             self.lvlDynamite = 1
