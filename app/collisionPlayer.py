@@ -197,7 +197,7 @@ class CollisionPlayer:
             if player.jumpState != CLIMBING and player.name == "player":
                 player.jumpState = CLIMBING
                 player.speedx = 0
-                player.speedy = 0
+                # player.speedy = 0
         else:
             if player.jumpState == CLIMBING:
                 player.jumpState = JUMP
