@@ -14,6 +14,8 @@ class Pickaxe(pygame.sprite.Sprite):
             nameImg = 'pickaxeLvl2.png'
         elif lvlPickaxe == 3:
             nameImg = 'pickaxeLvl3.png'
+        elif lvlPickaxe >= 4:
+            nameImg = 'pickaxeLvl4.png'
 
 
         self.imageOrig = pygame.image.load(os.path.join('img', nameImg))

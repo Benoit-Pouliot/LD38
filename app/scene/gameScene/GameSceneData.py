@@ -99,7 +99,7 @@ class GameSceneData:
         self.lvlDrill = 0
 
         if TAG_MARIE == 1:
-            self.money = 100000
+            self.money = 0
             self.nbSpring = 10
             self.nbLadder = 10
             self.nbAntiGravity = 10

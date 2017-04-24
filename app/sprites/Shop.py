@@ -76,6 +76,7 @@ class Shop(pygame.sprite.Sprite):
 
         self.addUpgrade('pickaxeLvl2', 'pickaxeLvl2', self.buyPickaxe2, PICKAXE_LVL_COST[2], SHOP_AVAILABLE)
         self.addUpgrade('pickaxeLvl3', 'pickaxeLvl3', self.buyPickaxe3, PICKAXE_LVL_COST[3], SHOP_AVAILABLE)
+        self.addUpgrade('pickaxeLvl4', 'pickaxeLvl4', self.buyPickaxe4, PICKAXE_LVL_COST[4], SHOP_AVAILABLE)
 
         self.addUpgrade('drillLvl1', 'drillLvl1-a', self.buyDrill1, DRILL_LVL_COST[1], SHOP_AVAILABLE)
         self.addUpgrade('drillLvl2', 'drillLvl2-a', self.buyDrill2, DRILL_LVL_COST[2], SHOP_AVAILABLE)
@@ -102,6 +103,8 @@ class Shop(pygame.sprite.Sprite):
     def checkNewLink(self,name):
         if name == 'pickaxeLvl2':
             self.upgradeList['pickaxeLvl3'].unlock = True
+        if name == 'pickaxeLvl3':
+            self.upgradeList['pickaxeLvl4'].unlock = True
         if name == 'drillLvl1':
             self.upgradeList['drillLvl2'].unlock = True
         if name == 'drillLvl2':
@@ -156,6 +159,14 @@ class Shop(pygame.sprite.Sprite):
 
     def buyPickaxe3(self):
         self.buy('pickaxeLvl3')
+        if self.sold:
+            self.data.lvlPickaxe += 1
+            self.data.player.LeftClickMode = PLAYER_DIG_MODE
+            self.data.player.setStrength()
+            self.sold = False
+
+    def buyPickaxe4(self):
+        self.buy('pickaxeLvl4')
         if self.sold:
             self.data.lvlPickaxe += 1
             self.data.player.LeftClickMode = PLAYER_DIG_MODE

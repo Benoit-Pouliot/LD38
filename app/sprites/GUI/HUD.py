@@ -71,6 +71,9 @@ class HUD(pygame.sprite.Sprite):
                 imageName = 'pickaxeLvl2'
             elif lvlPickaxe == 3:
                 imageName = 'pickaxeLvl3'
+            elif lvlPickaxe >= 4:
+                imageName = 'pickaxeLvl4'
+
         elif leftMode == PLAYER_DRILL_MODE:
             lvlPickaxe = self.data.lvlDrill
             if lvlPickaxe == 1:
