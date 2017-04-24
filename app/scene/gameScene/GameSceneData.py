@@ -94,9 +94,12 @@ class GameSceneData:
 
         if TAG_MARIE == 1:
             self.money = 100000
-            self.nbSpring = 3
-            self.nbLadder = 2
-            self.nbAntiGravity = 1
+            self.nbSpring = 10
+            self.nbLadder = 10
+            self.nbAntiGravity = 10
+            self.lvlPickaxe = 1
+            self.lvlDrill = 1
+            self.lvlDynamite = 1
 
         self.addHUD()
 

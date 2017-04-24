@@ -64,6 +64,8 @@ class Shop(pygame.sprite.Sprite):
     def addUpgrades(self):
         self.addUpgrade('spring','trempo1',self.buySpring,SPRING_COST,SHOP_REPEATABLE)
         self.addUpgrade('ladder', 'ladder', self.buyLadder, LADDER_COST, SHOP_REPEATABLE)
+
+        # TODO: REMOVE ANTI GRAVITY FROM SHOP
         self.addUpgrade('antiGravity', 'antiGravity', self.buyAntiGravity, ANTI_GRAVITY_COST, SHOP_REPEATABLE)
 
         self.addUpgrade('pickaxeLvl2', 'pickaxeLvl2', self.buyPickaxe2, PICKAXE_LVL_COST[2], SHOP_AVAILABLE)
@@ -73,12 +75,13 @@ class Shop(pygame.sprite.Sprite):
         self.addUpgrade('drillLvl2', 'drillLvl2-a', self.buyDrill2, DRILL_LVL_COST[2], SHOP_AVAILABLE)
         self.addUpgrade('drillLvl3', 'drillLvl3-a', self.buyDrill3, DRILL_LVL_COST[3], SHOP_AVAILABLE)
 
-        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, DYNAMITE_LVL_COST[1], SHOP_AVAILABLE)
-        self.addUpgrade('dynamiteLvl2', 'dynamiteLvl2', self.buyDynamite2, DYNAMITE_LVL_COST[2], SHOP_AVAILABLE)
+        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, DYNAMITE_LVL_COST, SHOP_AVAILABLE)
 
     # Unlock what needs to be unlocked
         self.upgradeList['spring'].unlock = True
         self.upgradeList['ladder'].unlock = True
+
+        #TODO: REMOVE ANTI GRAVITY FROM SHOP
         self.upgradeList['antiGravity'].unlock = True
 
         self.upgradeList['pickaxeLvl2'].unlock = True
@@ -97,8 +100,6 @@ class Shop(pygame.sprite.Sprite):
             self.upgradeList['drillLvl2'].unlock = True
         if name == 'drillLvl2':
             self.upgradeList['drillLvl3'].unlock = True
-        if name == 'dynamiteLvl1':
-            self.upgradeList['dynamiteLvl2'].unlock = True
 
     def buy(self,item):
         myUpgrade = self.upgradeList[item]

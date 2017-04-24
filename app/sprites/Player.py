@@ -132,6 +132,7 @@ class Player(pygame.sprite.Sprite):
         self.mapData.camera.add(self.target)
 
         self.LeftClickMode = PLAYER_DIG_MODE
+        self.RightClickMode = PLAYER_LADDER_MODE
 
         self.pickaxeCooldown = Cooldown(DIG_COOLDOWN)
         self.drillCooldown = Cooldown(DRILL_COOLDOWN)
@@ -140,8 +141,9 @@ class Player(pygame.sprite.Sprite):
         self.pickaxeObj = None
         self.drillObj = None
 
-        self.pickaxeStrength=1
-        self.drillStrength=0
+        self.pickaxeStrength = 1
+        self.drillStrength = 0
+        self.dynamiteStrength = 0
 
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
@@ -689,8 +691,17 @@ class Player(pygame.sprite.Sprite):
             elif event.key == pygame.K_2:
                 if self.mapData.lvlDrill is not 0:
                     self.LeftClickMode = PLAYER_DRILL_MODE
-            # elif event.key == pygame.K_3:
-            #     self.LeftClickMode = PLAYER_DYNAMITE_MODE
+            elif event.key == pygame.K_3:
+                self.RightClickMode = PLAYER_LADDER_MODE
+            elif event.key == pygame.K_4:
+                if self.mapData.nbSpring is not 0:
+                    self.RightClickMode = PLAYER_SPRING_MODE
+            elif event.key == pygame.K_5:
+                if self.mapData.lvlDynamite is not 0:
+                    self.RightClickMode = PLAYER_DYNAMITE_MODE
+            elif event.key == pygame.K_6:
+                if self.mapData.nbAntiGravity is not 0:
+                    self.RightClickMode = PLAYER_ANTI_MODE
             elif event.key == pygame.K_m:
                 if self.musicMode == MUSIC_RUN:
                     self.musicMode = MUSIC_MUTED
@@ -735,9 +746,20 @@ class Player(pygame.sprite.Sprite):
             if self.LeftClickMode == PLAYER_DIG_MODE:
                 if self.pickaxeCooldown.isZero:
                     self.pickaxeCooldown.start()
-            if self.LeftClickMode == PLAYER_DRILL_MODE:
+            elif self.LeftClickMode == PLAYER_DRILL_MODE:
                 if self.drillCooldown.isZero:
                     self.drillCooldown.start()
         if self.rightMousePressed:
-            self.createSpring()
+            if self.RightClickMode == PLAYER_DYNAMITE_MODE:
+                # TODO Add method for ladder mode
+                pass
+            elif self.RightClickMode == PLAYER_LADDER_MODE:
+                # TODO Add method for ladder mode
+                pass
+            elif self.RightClickMode == PLAYER_SPRING_MODE:
+                self.createSpring()
+                pass
+            elif self.RightClickMode == PLAYER_ANTI_MODE:
+                # TODO Add method for anti gravity mode
+                pass
 

@@ -2,8 +2,8 @@ import pygame
 from app.settings import *
 
 class StatDisplay:
-    def __init__(self,screen,pos,font,statName=None, textColor=HUD_FONT_COLOR):
-        self.screen = screen
+    def __init__(self,background,pos,font,statName=None, textColor=HUD_FONT_COLOR):
+        self.background = background
         self.stat = None
         self.statName = statName
         self.printedLine = None
@@ -18,4 +18,4 @@ class StatDisplay:
         else:
             self.printedLine = self.font.render(self.statName + ' : ' + self.stat, True, self.textColor)
 
-        self.screen.blit(self.printedLine, self.position)
+        self.background.blit(self.printedLine, self.position)
