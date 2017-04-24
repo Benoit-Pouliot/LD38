@@ -52,6 +52,12 @@ class Dynamite(pygame.sprite.Sprite):
 
         self.mapData = mapData
 
+        # Sounds
+        self.dictSound = {'explosion': pygame.mixer.Sound(os.path.join('music', 'ExplosionDynamite.wav'))}
+        # quick set up of volume
+        for key in self.dictSound:
+            self.dictSound[key].set_volume(.3)
+
     def update(self):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
@@ -65,6 +71,9 @@ class Dynamite(pygame.sprite.Sprite):
     def detonate(self):
         tileWidth = self.mapData.tmxData.tilewidth
         tileHeight = self.mapData.tmxData.tileheight
+
+        if not self.mapData.player.musicMuted:
+            self.dictSound['explosion'].play(0)
 
         for i in range(-1,1):
             for j in range(-1,1):

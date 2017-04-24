@@ -37,6 +37,12 @@ class Shop(pygame.sprite.Sprite):
         # self.menuSelect = pygame.mixer.Sound(os.path.join('music_pcm', 'menu_select.wav'))
         # self.menuSelect.set_volume(.25)
 
+        self.dictSound = {'buy': pygame.mixer.Sound(os.path.join('music', 'Achat.wav')),
+                          'notenoughtmoney': pygame.mixer.Sound(os.path.join('music', 'PasAssezDargent.wav'))}
+        # quick set up of volume
+        for key in self.dictSound:
+            self.dictSound[key].set_volume(.1)
+
         #MusicFactory(SHOP_SCREEN)
     def update(self):
         self.positionUpgrade()
@@ -106,6 +112,8 @@ class Shop(pygame.sprite.Sprite):
             if self.data.money >=myUpgrade.cost:
                 self.sold = True
                 self.data.money -= myUpgrade.cost
+                if not self.data.player.musicMuted:
+                    self.dictSound['buy'].play(0)
             if self.sold == True:
                 if myUpgrade.boughtState != SHOP_REPEATABLE:
                     myUpgrade.boughtState = SHOP_SOLD_OUT
@@ -113,6 +121,8 @@ class Shop(pygame.sprite.Sprite):
 
                 #self.soundPaid.play()
             else:
+                if not self.data.player.musicMuted:
+                    self.dictSound['notenoughtmoney'].play(0)
                 if TAG_MARIE == 1:
                     print('Not enough money')
                 #self.soundNotEM.play()

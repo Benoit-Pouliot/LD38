@@ -189,11 +189,9 @@ class Player(pygame.sprite.Sprite):
 
         # Sounds
         self.dictSound = {'spring': pygame.mixer.Sound(os.path.join('music', 'Trempo2.wav')),
-                          'buy': pygame.mixer.Sound(os.path.join('music', 'Achat.wav')),
                           'pause': pygame.mixer.Sound(os.path.join('music', 'BruitPause.wav')),
                           'drill': pygame.mixer.Sound(os.path.join('music', 'Drill.wav')),
                           'explosion': pygame.mixer.Sound(os.path.join('music', 'ExplosionDynamite.wav')),
-                          'notenoughtmoney': pygame.mixer.Sound(os.path.join('music', 'PasAssezDargent.wav')),
                           'pickaxe': pygame.mixer.Sound(os.path.join('music', 'Pickaxe.wav')),
                           'teleport': pygame.mixer.Sound(os.path.join('music', 'TuyeauVersLeHaut.wav'))}
         # quick set up of volume
