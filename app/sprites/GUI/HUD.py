@@ -34,14 +34,14 @@ class HUD(pygame.sprite.Sprite):
         self.activeLeftItemLabel = ImageDisplay(self.image,(SCREEN_WIDTH* 0.05, 5),self.HUDFont, 'Left: ')
         self.activeRightItemLabel = ImageDisplay(self.image, (SCREEN_WIDTH * 0.15, 5), self.HUDFont, 'Right: ')
 
-        self.dynamiteLabel = ItemQtyDisplay(self.image, (SCREEN_WIDTH * 0.39, 5), self.HUDFont, 'dynamiteLvl1')
-        self.ladderLabel = ItemQtyDisplay(self.image,(SCREEN_WIDTH* 0.51, 5),self.HUDFont, 'ladder')
-        self.springLabel = ItemQtyDisplay(self.image,(SCREEN_WIDTH* 0.61, 5),self.HUDFont, 'trempoHUD')
+        self.dynamiteLabel = ItemQtyDisplay(self.image, (SCREEN_WIDTH * 0.3, 5), self.HUDFont, 'dynamiteLvl1')
+        self.ladderLabel = ItemQtyDisplay(self.image,(SCREEN_WIDTH* 0.43, 5),self.HUDFont, 'ladder')
+        self.springLabel = ItemQtyDisplay(self.image,(SCREEN_WIDTH* 0.54, 5),self.HUDFont, 'trempoHUD')
 
         # TODO: REMOVE ANTI-GRAVITY
-        self.antiGravityLabel = ItemQtyDisplay(self.image,(SCREEN_WIDTH* 0.75, 5),self.HUDFont, 'antiGravity')
+        self.antiGravityLabel = ItemQtyDisplay(self.image,(SCREEN_WIDTH* 0.69, 5),self.HUDFont, 'antiGravity')
 
-        self.moneyLabel = StatDisplay(self.image,(SCREEN_WIDTH* 0.85, 5),self.HUDFont, 'Gems')
+        self.moneyLabel = StatDisplay(self.image,(SCREEN_WIDTH* 0.8, 5),self.HUDFont, 'Gems')
 
 
 
