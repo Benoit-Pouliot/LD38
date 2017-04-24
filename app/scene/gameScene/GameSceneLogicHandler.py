@@ -26,6 +26,7 @@ class GameSceneLogicHandler:
         self.handleDynamites()
         self.handleZoneCollision(self.player)
         self.checkShop()
+        self.checkWinZone()
         self.checkHighlight()
         self.data.allSprites.update()
         self.data.spritesHUD.update()
@@ -40,21 +41,22 @@ class GameSceneLogicHandler:
 
     def handleZoneCollision(self, player):
         inShopZone = False
+        inWinZone = False
         for obj in self.data.tmxData.objects:
             if self.isPlayerIsInZone(player, obj) == True:
-                if obj.name == "OutZone":
-                    nameNewZone = obj.LevelZone
-                    nameInZone = obj.InZone
-
-                    # Initializing new map
-                    self.newMapData = GameSceneData(nameNewZone, nameInZone)
-                elif obj.name == "ShopZone":
+                if obj.name == "ShopZone":
                     inShopZone = True
+                elif obj.name == "WinZone":
+                    inWinZone = True
 
         if inShopZone:
             self.data.activateShop = True
         else:
             self.data.activateShop = False
+        if inWinZone:
+            self.data.activateWinMsg = True
+        else:
+            self.data.activateWinMsg = False
 
 
     def isPlayerIsInZone(self, player, zone):
@@ -112,6 +114,15 @@ class GameSceneLogicHandler:
                 if self.data.spritesHUD.has(sprites):
                     self.data.spritesHUD.remove(sprites)
                     self.data.notifySet.remove(sprites)
+
+    def checkWinZone(self):
+        if self.data.activateWinMsg:
+            for sprites in self.data.winGroup:
+                self.data.spritesHUD.add(sprites)
+        else:
+            for sprites in self.data.winGroup:
+                if self.data.spritesHUD.has(sprites):
+                    self.data.spritesHUD.remove(sprites)
 
     def handleSprings(self):
         for spring in self.data.springGroup.sprites():
