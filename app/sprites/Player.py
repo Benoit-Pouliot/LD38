@@ -686,7 +686,6 @@ class Player(pygame.sprite.Sprite):
     def setStrength(self):
         self.pickaxeStrength = PICKAXE_STRENGTH_LEVEL[self.mapData.lvlPickaxe]
         self.drillStrength = DRILL_STRENGTH_LEVEL[self.mapData.lvlDrill]
-        self.dynamiteStrength = DYNAMITE_STRENGTH_LEVEL[self.mapData.lvlDynamite]
 
     def updateMusic(self):
 
@@ -730,10 +729,6 @@ class Player(pygame.sprite.Sprite):
                 self.downPressed = True
             elif event.key == pygame.K_SPACE:
                 self.jump()
-            elif event.key == pygame.K_c:
-                self.createLadder()
-            elif event.key == pygame.K_v:
-                self.createDynamite()
             elif event.key == pygame.K_1:
                 self.LeftClickMode = PLAYER_DIG_MODE
             elif event.key == pygame.K_2:
@@ -745,7 +740,7 @@ class Player(pygame.sprite.Sprite):
                 if self.mapData.nbSpring is not 0:
                     self.RightClickMode = PLAYER_SPRING_MODE
             elif event.key == pygame.K_5:
-                if self.mapData.lvlDynamite is not 0:
+                if self.mapData.nbDynamite is not 0:
                     self.RightClickMode = PLAYER_DYNAMITE_MODE
             elif event.key == pygame.K_6:
                 if self.mapData.nbAntiGravity is not 0:

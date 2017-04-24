@@ -92,7 +92,7 @@ class HUD(pygame.sprite.Sprite):
         self.activeRightItemLabel.display(imageName)
 
     def updateDynamite(self):
-        self.dynamiteLabel.stat = str(self.data.lvlDynamite)
+        self.dynamiteLabel.stat = str(self.data.nbDynamite)
         self.dynamiteLabel.display()
 
     def updateMoney(self):

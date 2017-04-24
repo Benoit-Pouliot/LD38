@@ -86,13 +86,12 @@ class GameSceneData:
 
         # Player inventory
         self.money = 0
-        self.nbSpring = 200
-        self.nbLadder = 10
+        self.nbSpring = 0
+        self.nbLadder = 0
         self.nbAntiGravity = 0
-        self.nbDynamite = 20
+        self.nbDynamite = 0
         self.lvlPickaxe = 1
         self.lvlDrill = 0
-        self.lvlDynamite = 0
 
         if TAG_MARIE == 1:
             self.money = 100000
@@ -101,7 +100,7 @@ class GameSceneData:
             self.nbAntiGravity = 10
             self.lvlPickaxe = 1
             self.lvlDrill = 1
-            self.lvlDynamite = 1
+
 
         if TAG_BP:
             self.money = 100000
@@ -110,7 +109,6 @@ class GameSceneData:
             self.nbAntiGravity = 100
             self.lvlPickaxe = 1
             self.lvlDrill = 1
-            self.lvlDynamite = 1
 
         self.addHUD()
 
