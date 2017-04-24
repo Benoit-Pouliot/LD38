@@ -84,9 +84,11 @@ class Dynamite(pygame.sprite.Sprite):
                     if a == 2:
                         self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0)
                         self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0, COLLISION_LAYER)
+                        self.mapData.player.destroyRedTile((self.rect.centerx - i * tileWidth)//self.mapData.tmxData.tilewidth, (self.rect.centery - j * tileHeight)//self.mapData.tmxData.tileheight)
                 else:
                     self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0)
                     self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0, COLLISION_LAYER)
+                    self.mapData.player.destroyRedTile((self.rect.centerx - i * tileWidth)//self.mapData.tmxData.tilewidth, (self.rect.centery - j * tileHeight)//self.mapData.tmxData.tileheight)
 
         self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
 

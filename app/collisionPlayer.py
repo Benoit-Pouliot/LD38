@@ -18,6 +18,21 @@ class CollisionPlayer:
             self.downCollision(player, mapData)
             self.upCollision(player, mapData)
 
+            self.dealWithStuck(player, mapData)
+
+    def dealWithStuck(self, player, mapData):
+        tileWidth = mapData.tmxData.tilewidth
+        tileHeight = mapData.tmxData.tileheight
+
+        upRightTileGid = self.map.tmxData.get_tile_gid((player.collisionMask.rect.right + player.speedx)/self.tileWidth, player.collisionMask.rect.top/self.tileHeight, COLLISION_LAYER)
+        downRightTileGid = self.map.tmxData.get_tile_gid((player.collisionMask.rect.right + player.speedx)/self.tileWidth, (player.collisionMask.rect.bottom-1)/self.tileHeight, COLLISION_LAYER)
+        upLeftTileGid = mapData.tmxData.get_tile_gid((player.collisionMask.rect.left + player.speedx)/tileWidth, player.collisionMask.rect.top/tileHeight, COLLISION_LAYER)
+        downLeftTileGid = mapData.tmxData.get_tile_gid((player.collisionMask.rect.left + player.speedx)/tileWidth, (player.collisionMask.rect.bottom-1)/tileHeight, COLLISION_LAYER)
+        upMidTileGid = mapData.tmxData.get_tile_gid(player.collisionMask.rect.centerx/tileWidth, (player.collisionMask.rect.top + player.speedy)/tileHeight, COLLISION_LAYER)
+
+        if upRightTileGid  == self.map.solidGID and downRightTileGid == self.map.solidGID and upLeftTileGid == self.map.solidGID and downLeftTileGid == self.map.solidGID and upMidTileGid == self.map.solidGID:
+            player.rect.y -= 2*tileHeight
+
     def rightCollision(self,player, map):
 
         # mapHeight = map.tmxData.height * tileHeight

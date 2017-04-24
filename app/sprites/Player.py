@@ -799,14 +799,11 @@ class Player(pygame.sprite.Sprite):
                     self.drillCooldown.start()
         if self.rightMousePressed:
             if self.RightClickMode == PLAYER_DYNAMITE_MODE:
-                # TODO Add method for ladder mode
-                pass
+                self.createDynamite()
             elif self.RightClickMode == PLAYER_LADDER_MODE:
-                # TODO Add method for ladder mode
-                pass
+                self.createLadder()
             elif self.RightClickMode == PLAYER_SPRING_MODE:
                 self.createSpring()
-                pass
             elif self.RightClickMode == PLAYER_ANTI_MODE:
                 # TODO Add method for anti gravity mode
                 pass
