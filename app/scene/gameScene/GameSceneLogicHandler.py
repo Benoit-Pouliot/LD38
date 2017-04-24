@@ -30,7 +30,7 @@ class GameSceneLogicHandler:
         self.checkHighlight()
         self.data.allSprites.update()
         self.data.spritesHUD.update()
-        self.applyGravity(self.player)
+        self.applyGravity(self.data.allSprites)
 
         # self.handleSpriteTileCollision(self.player, self.data)
 
@@ -69,9 +69,10 @@ class GameSceneLogicHandler:
         else:
            return False
 
-    def applyGravity(self, sprite):
-        if sprite.isPhysicsApplied == True or sprite.isGravityApplied == True:
-            sprite.speedy += GRAVITY
+    def applyGravity(self, allSprites):
+        for sprite in allSprites:
+            if sprite.isPhysicsApplied == True or sprite.isGravityApplied == True:
+                sprite.speedy += GRAVITY
 
     def applyFriction(self, sprite):
         if sprite.isPhysicsApplied == True or sprite.isFrictionApplied == True:

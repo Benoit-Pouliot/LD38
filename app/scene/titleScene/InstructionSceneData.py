@@ -32,10 +32,10 @@ class InstructionSceneData:
         self.camera = None
 
         boxWidth = 0.55 * SCREEN_WIDTH
-        self.createControlBox(SCREEN_WIDTH/2-boxWidth/2, 3*SCREEN_HEIGHT / 7, boxWidth,2 * SCREEN_HEIGHT / 5)
+        self.createControlBox(SCREEN_WIDTH/2-boxWidth/2, 3*SCREEN_HEIGHT / 7, boxWidth,3 * SCREEN_HEIGHT / 7)
 
         buttonWidth = 0.55 * SCREEN_WIDTH-100
-        self.backToTitleScreenButton = Button((SCREEN_WIDTH/2-buttonWidth/2, 17 * SCREEN_HEIGHT / 20), (buttonWidth, 50), 'Back to main menu',
+        self.backToTitleScreenButton = Button((SCREEN_WIDTH/2-buttonWidth/2, 17 * SCREEN_HEIGHT / 20+20), (buttonWidth, 50), 'Back to main menu',
                                               self.goToTitleScreen)
         self.spritesHUD.add(self.backToTitleScreenButton)
         self.notifySet.add(self.backToTitleScreenButton)
@@ -49,6 +49,8 @@ class InstructionSceneData:
         self.textGoal.textList.append('Use left and right mouse keys to use them.')
         self.textGoal.textList.append('')
         self.textGoal.textList.append('Press m key to mute the game.')
+        self.textGoal.textList.append('')
+        self.textGoal.textList.append('Make sure to buy some ladders so you won\'t get stuck!')
 
 
         self.allSprites.add(self.textGoal)  # Add sprite

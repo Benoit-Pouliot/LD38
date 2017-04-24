@@ -12,13 +12,21 @@ class CollisionPlayer:
         self.map = map
 
     def collisionAllSprites(self, player, mapData):
-        if player.isPhysicsApplied == True or player.isCollisionApplied == True:
-            self.rightCollision(player, mapData)
-            self.leftCollision(player, mapData)
-            self.downCollision(player, mapData)
-            self.upCollision(player, mapData)
+        for sprite in mapData.allSprites:
+            if sprite.name == 'player':
+                if player.isPhysicsApplied == True or player.isCollisionApplied == True:
+                    self.rightCollision(player, mapData)
+                    self.leftCollision(player, mapData)
+                    self.downCollision(player, mapData)
+                    self.upCollision(player, mapData)
 
-            self.dealWithStuck(player, mapData)
+                    self.dealWithStuck(player, mapData)
+            else:
+                if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
+                    self.rightCollision(sprite, mapData)
+                    self.leftCollision(sprite, mapData)
+                    self.downCollision(sprite, mapData)
+                    self.upCollision(sprite, mapData)
 
     def dealWithStuck(self, player, mapData):
         tileWidth = mapData.tmxData.tilewidth

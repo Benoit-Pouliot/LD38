@@ -9,6 +9,7 @@ import pytmx
 from app.settings import *
 from app.sprites.GUI.HUD import HUD
 from app.sprites.Player import Player
+from app.sprites.Seller import Seller
 from app.sprites.WinZone import WinZone
 from app.sprites.Shop import Shop
 from ldLib.tools.TmxData import TmxData
@@ -60,7 +61,6 @@ class GameSceneData:
 
         # Put camera in mapData
         self.camera = pyscroll.PyscrollGroup(map_layer=self.cameraPlayer, default_layer=SPRITE_LAYER)
-        self.camera.add(self.allSprites)
 
         # Spawn point of the player
         valBool = False
@@ -70,6 +70,12 @@ class GameSceneData:
                     self.spawmPointPlayerx = obj.x
                     self.spawmPointPlayery = obj.y
                     valBool = True
+            elif obj.name == "SpawnSeller":
+                self.seller = Seller(obj.x,obj.y)
+                self.allSprites.add(self.seller)
+
+        # Update camera
+        self.camera.add(self.allSprites)
 
         self.player = Player(self.spawmPointPlayerx, self.spawmPointPlayery, self)
 
@@ -92,19 +98,19 @@ class GameSceneData:
         # Player inventory
         self.money = 0
         self.nbSpring = 0
-        self.nbLadder = 0
+        self.nbLadder = 10
         self.nbAntiGravity = 0
         self.nbDynamite = 0
         self.lvlPickaxe = 1
         self.lvlDrill = 0
 
         if TAG_MARIE == 1:
-            self.money = 0
+            self.money = 10000
             self.nbSpring = 10
             self.nbLadder = 10
             self.nbAntiGravity = 10
             self.lvlPickaxe = 1
-            self.lvlDrill = 1
+            self.lvlDrill = 0
 
 
         if TAG_BP:

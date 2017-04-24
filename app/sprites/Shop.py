@@ -12,6 +12,8 @@ class Shop(pygame.sprite.Sprite):
     def __init__(self,data):
         super().__init__()
 
+        self.name = 'shop'
+
         self.image = pygame.Surface([SCREEN_WIDTH*4/5, SCREEN_WIDTH*2/5], pygame.SRCALPHA, 32)
         self.image = self.image.convert_alpha()
 
@@ -28,6 +30,10 @@ class Shop(pygame.sprite.Sprite):
         self.sold = False
 
         self.positionUpgrade()
+
+        self.isGravityApplied = False
+        self.isPhysicsApplied = False
+        self.isCollisionApplied = False
 
         # POUR LA MUSIQUE
         # self.soundPaid = pygame.mixer.Sound(os.path.join('music_pcm', 'paidMoney.wav'))
@@ -127,8 +133,6 @@ class Shop(pygame.sprite.Sprite):
             else:
                 if not self.data.player.musicMuted:
                     self.dictSound['notenoughtmoney'].play(0)
-                if TAG_MARIE == 1:
-                    print('Not enough money')
                 #self.soundNotEM.play()
 
     def buySpring(self):
@@ -140,13 +144,13 @@ class Shop(pygame.sprite.Sprite):
     def buyAntiGravity(self):
         self.buy('antiGravity')
         if self.sold:
-            self.data.nbAntiGravity += 1
+            self.data.nbAntiGravity += 10
             self.sold = False
 
     def buyLadder(self):
         self.buy('ladder')
         if self.sold:
-            self.data.nbLadder += 1
+            self.data.nbLadder += 10
             self.sold = False
 
     def buyPickaxe2(self):
