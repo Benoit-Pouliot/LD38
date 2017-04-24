@@ -133,6 +133,7 @@ class Player(pygame.sprite.Sprite):
         self.mapData.camera.add(self.target)
 
         self.LeftClickMode = PLAYER_DIG_MODE
+        self.RightClickMode = PLAYER_LADDER_MODE
 
         self.pickaxeCooldown = Cooldown(DIG_COOLDOWN)
         self.drillCooldown = Cooldown(DRILL_COOLDOWN)
@@ -142,8 +143,9 @@ class Player(pygame.sprite.Sprite):
         self.pickaxeObj = None
         self.drillObj = None
 
-        self.pickaxeStrength=1
-        self.drillStrength=0
+        self.pickaxeStrength = 1
+        self.drillStrength = 0
+        self.dynamiteStrength = 0
 
         #Link your own sounds here
         #self.soundSpring = pygame.mixer.Sound(os.path.join('music_pcm', 'LvlUpFail.wav'))
@@ -179,11 +181,28 @@ class Player(pygame.sprite.Sprite):
         self.modifierCMY = 8
         self.collisionMask = CollisionMask(self.rect.x + self.modifierCMX, self.rect.y+self.modifierCMY, self.rect.width-2*self.modifierCMX, self.rect.height-self.modifierCMY)
 
+        # music
         self.musicChanged = True
         self.musicMode = MUSIC_OFF
+        self.musicMuted = False
         self.musicType = MUSIC_TYPE1
         self.musicName = {MUSIC_TYPE1: 'Main.mp3',
                           MUSIC_TYPE2: 'SubTheme.mp3'}
+
+        # Sounds
+        self.dictSound = {'spring': pygame.mixer.Sound(os.path.join('music', 'Trempo2.wav')),
+                          'pause': pygame.mixer.Sound(os.path.join('music', 'BruitPause.wav')),
+                          'drill': pygame.mixer.Sound(os.path.join('music', 'Drill.wav')),
+                          'explosion': pygame.mixer.Sound(os.path.join('music', 'ExplosionDynamite.wav')),
+                          'pickaxe': pygame.mixer.Sound(os.path.join('music', 'Pickaxe.wav')),
+                          'teleport': pygame.mixer.Sound(os.path.join('music', 'TuyeauVersLeHaut.wav'))}
+        # quick set up of volume
+        for key in self.dictSound:
+            self.dictSound[key].set_volume(.3)
+        self.dictSound['spring'].set_volume(.3)
+        self.dictSound['pickaxe'].set_volume(.1)
+        self.dictSound['drill'].set_volume(.1)
+
 
     def setShapeImage(self):
         self.imageShapeLeft = pygame.transform.flip(self.imageBase, True, False)
@@ -447,6 +466,8 @@ class Player(pygame.sprite.Sprite):
                 self.mapData.nbSpring -= 1
                 self.springList.append(spring)
                 self.springCooldown.start()
+                if not self.musicMuted:
+                    self.dictSound['spring'].play(0)
 
     def destroyStackedSpring(self):
         for spring in self.mapData.springGroup.sprites():
@@ -490,6 +511,9 @@ class Player(pygame.sprite.Sprite):
 
     def bounce(self, speed):
         self.speedy = -speed
+
+        if not self.musicMuted:
+            self.dictSound['spring'].play(0)
             # occupied = pygame.sprite.spritecollideany(barricade, self.mapData.enemyGroup)
             # if occupied is None:
             #     occupied = pygame.sprite.spritecollideany(barricade, self.mapData.obstacleGroup)
@@ -534,7 +558,6 @@ class Player(pygame.sprite.Sprite):
     def spring(self):
         self.jumpState = JUMP
         self.speedy = -self.maxSpeedyUp
-        #self.soundSpring.play()
 
     def hurt(self):
         if not self.isInvincible:
@@ -554,6 +577,8 @@ class Player(pygame.sprite.Sprite):
             targetTile = self.mapData.tmxData.get_tile_gid(posX, posY, COLLISION_LAYER)
 
             if targetTile == self.mapData.solidGID:
+                if not self.musicMuted:
+                    self.dictSound['pickaxe'].play(0)
                 if self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life > self.pickaxeStrength:
                     self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life -= self.pickaxeStrength
                     self.addRedTile(self.target.rect.centerx//self.mapData.tmxData.tilewidth, self.target.rect.centery//self.mapData.tmxData.tileheight, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].life, self.mapData.tileLife[self.target.rect.centerx//self.mapData.tmxData.tilewidth][self.target.rect.centery//self.mapData.tmxData.tileheight].maxLife)
@@ -615,6 +640,8 @@ class Player(pygame.sprite.Sprite):
                 self.drillObj = None
             self.drillObj = Drill(0, 0, self, self.mapData.lvlDrill)
             self.mapData.camera.add(self.drillObj)
+            if not self.musicMuted:
+                    self.dictSound['drill'].play(0, int(DRILL_COOLDOWN/FPS*1000))
 
         if self.drillCooldown.value < self.drillCooldown.max-1 and self.drillObj is not None:
             self.drillObj.updateDrill()
@@ -674,13 +701,16 @@ class Player(pygame.sprite.Sprite):
         if self.musicChanged:
             self.musicChanged = False
             if self.musicMode == MUSIC_OFF:
-                self.musicMode = MUSIC_RUN
+                self.musicMode = MUSIC_ON
                 pygame.mixer.music.load(os.path.join('music', self.musicName[self.musicType]))
-                pygame.mixer.music.set_volume(0.5)
+                if not self.musicMuted:
+                    pygame.mixer.music.set_volume(0.5)
+                elif self.musicMuted:
+                    pygame.mixer.music.set_volume(0)
                 pygame.mixer.music.play(-1)
-            elif self.musicMode == MUSIC_RUN:
+            elif not self.musicMuted:
                 pygame.mixer.music.set_volume(0.5)
-            elif self.musicMode == MUSIC_MUTED:
+            elif self.musicMuted:
                 pygame.mixer.music.set_volume(0)
 
     def notify(self, event):
@@ -709,14 +739,23 @@ class Player(pygame.sprite.Sprite):
             elif event.key == pygame.K_2:
                 if self.mapData.lvlDrill is not 0:
                     self.LeftClickMode = PLAYER_DRILL_MODE
-            # elif event.key == pygame.K_3:
-            #     self.LeftClickMode = PLAYER_DYNAMITE_MODE
+            elif event.key == pygame.K_3:
+                self.RightClickMode = PLAYER_LADDER_MODE
+            elif event.key == pygame.K_4:
+                if self.mapData.nbSpring is not 0:
+                    self.RightClickMode = PLAYER_SPRING_MODE
+            elif event.key == pygame.K_5:
+                if self.mapData.lvlDynamite is not 0:
+                    self.RightClickMode = PLAYER_DYNAMITE_MODE
+            elif event.key == pygame.K_6:
+                if self.mapData.nbAntiGravity is not 0:
+                    self.RightClickMode = PLAYER_ANTI_MODE
             elif event.key == pygame.K_m:
-                if self.musicMode == MUSIC_RUN:
-                    self.musicMode = MUSIC_MUTED
+                if not self.musicMuted:
+                    self.musicMuted = True
                     self.musicChanged = True
-                elif self.musicMode == MUSIC_MUTED:
-                    self.musicMode = MUSIC_RUN
+                elif self.musicMuted:
+                    self.musicMuted = False
                     self.musicChanged = True
 
 
@@ -755,9 +794,20 @@ class Player(pygame.sprite.Sprite):
             if self.LeftClickMode == PLAYER_DIG_MODE:
                 if self.pickaxeCooldown.isZero:
                     self.pickaxeCooldown.start()
-            if self.LeftClickMode == PLAYER_DRILL_MODE:
+            elif self.LeftClickMode == PLAYER_DRILL_MODE:
                 if self.drillCooldown.isZero:
                     self.drillCooldown.start()
         if self.rightMousePressed:
-            self.createSpring()
+            if self.RightClickMode == PLAYER_DYNAMITE_MODE:
+                # TODO Add method for ladder mode
+                pass
+            elif self.RightClickMode == PLAYER_LADDER_MODE:
+                # TODO Add method for ladder mode
+                pass
+            elif self.RightClickMode == PLAYER_SPRING_MODE:
+                self.createSpring()
+                pass
+            elif self.RightClickMode == PLAYER_ANTI_MODE:
+                # TODO Add method for anti gravity mode
+                pass
 

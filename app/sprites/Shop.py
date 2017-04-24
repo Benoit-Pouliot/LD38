@@ -37,6 +37,12 @@ class Shop(pygame.sprite.Sprite):
         # self.menuSelect = pygame.mixer.Sound(os.path.join('music_pcm', 'menu_select.wav'))
         # self.menuSelect.set_volume(.25)
 
+        self.dictSound = {'buy': pygame.mixer.Sound(os.path.join('music', 'Achat.wav')),
+                          'notenoughtmoney': pygame.mixer.Sound(os.path.join('music', 'PasAssezDargent.wav'))}
+        # quick set up of volume
+        for key in self.dictSound:
+            self.dictSound[key].set_volume(.1)
+
         #MusicFactory(SHOP_SCREEN)
     def update(self):
         self.positionUpgrade()
@@ -64,6 +70,8 @@ class Shop(pygame.sprite.Sprite):
     def addUpgrades(self):
         self.addUpgrade('spring','trempo1',self.buySpring,SPRING_COST,SHOP_REPEATABLE)
         self.addUpgrade('ladder', 'ladder', self.buyLadder, LADDER_COST, SHOP_REPEATABLE)
+
+        # TODO: REMOVE ANTI GRAVITY FROM SHOP
         self.addUpgrade('antiGravity', 'antiGravity', self.buyAntiGravity, ANTI_GRAVITY_COST, SHOP_REPEATABLE)
 
         self.addUpgrade('pickaxeLvl2', 'pickaxeLvl2', self.buyPickaxe2, PICKAXE_LVL_COST[2], SHOP_AVAILABLE)
@@ -73,12 +81,13 @@ class Shop(pygame.sprite.Sprite):
         self.addUpgrade('drillLvl2', 'drillLvl2-a', self.buyDrill2, DRILL_LVL_COST[2], SHOP_AVAILABLE)
         self.addUpgrade('drillLvl3', 'drillLvl3-a', self.buyDrill3, DRILL_LVL_COST[3], SHOP_AVAILABLE)
 
-        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, DYNAMITE_LVL_COST[1], SHOP_AVAILABLE)
-        self.addUpgrade('dynamiteLvl2', 'dynamiteLvl2', self.buyDynamite2, DYNAMITE_LVL_COST[2], SHOP_AVAILABLE)
+        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, DYNAMITE_LVL_COST, SHOP_AVAILABLE)
 
     # Unlock what needs to be unlocked
         self.upgradeList['spring'].unlock = True
         self.upgradeList['ladder'].unlock = True
+
+        #TODO: REMOVE ANTI GRAVITY FROM SHOP
         self.upgradeList['antiGravity'].unlock = True
 
         self.upgradeList['pickaxeLvl2'].unlock = True
@@ -97,8 +106,6 @@ class Shop(pygame.sprite.Sprite):
             self.upgradeList['drillLvl2'].unlock = True
         if name == 'drillLvl2':
             self.upgradeList['drillLvl3'].unlock = True
-        if name == 'dynamiteLvl1':
-            self.upgradeList['dynamiteLvl2'].unlock = True
 
     def buy(self,item):
         myUpgrade = self.upgradeList[item]
@@ -106,6 +113,8 @@ class Shop(pygame.sprite.Sprite):
             if self.data.money >=myUpgrade.cost:
                 self.sold = True
                 self.data.money -= myUpgrade.cost
+                if not self.data.player.musicMuted:
+                    self.dictSound['buy'].play(0)
             if self.sold == True:
                 if myUpgrade.boughtState != SHOP_REPEATABLE:
                     myUpgrade.boughtState = SHOP_SOLD_OUT
@@ -113,6 +122,8 @@ class Shop(pygame.sprite.Sprite):
 
                 #self.soundPaid.play()
             else:
+                if not self.data.player.musicMuted:
+                    self.dictSound['notenoughtmoney'].play(0)
                 if TAG_MARIE == 1:
                     print('Not enough money')
                 #self.soundNotEM.play()
