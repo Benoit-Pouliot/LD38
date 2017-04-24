@@ -9,7 +9,7 @@ class Seller(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
 
-        self.name = "vendor"
+        self.name = "seller"
         self.image = pygame.image.load(os.path.join('img', 'vendor.png'))
 
         self.rect = self.image.get_rect()

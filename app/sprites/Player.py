@@ -97,7 +97,7 @@ class Player(pygame.sprite.Sprite):
         self.maxSpeedyDownClimbing = 6
         self.accx = 2
         self.accy = 2
-        self.jumpSpeed = -10
+        self.jumpSpeed = -12
 
         self.isPhysicsApplied = False
         self.isGravityApplied = True

@@ -21,7 +21,7 @@ class CollisionPlayer:
                     self.upCollision(player, mapData)
 
                     self.dealWithStuck(player, mapData)
-            else:
+            elif sprite.name == 'seller':
                 if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
                     self.rightCollision(sprite, mapData)
                     self.leftCollision(sprite, mapData)
