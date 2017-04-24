@@ -111,6 +111,7 @@ class GameSceneData:
             self.nbAntiGravity = 10
             self.lvlPickaxe = 1
             self.lvlDrill = 0
+            self.player.setStrength()
 
 
         if TAG_BP:

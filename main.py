@@ -20,7 +20,7 @@ if __name__ == '__main__':
     pygame.display.set_caption("Gnome Digger")
 
     # Init
-    pygame.mixer.pre_init(16000 , -16, 2, 2048)
+    pygame.mixer.pre_init(22050 , -16, 2, 4096)
     # pygame.mixer.init()
     pygame.init()
     pygame.font.init()

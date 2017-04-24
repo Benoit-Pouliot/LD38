@@ -139,18 +139,21 @@ class Shop(pygame.sprite.Sprite):
         self.buy('spring')
         if self.sold:
             self.data.nbSpring += 1
+            self.data.player.RightClickMode = PLAYER_SPRING_MODE
             self.sold = False
 
     def buyAntiGravity(self):
         self.buy('antiGravity')
         if self.sold:
             self.data.nbAntiGravity += 10
+            self.data.player.RightClickMode = PLAYER_ANTI_MODE
             self.sold = False
 
     def buyLadder(self):
         self.buy('ladder')
         if self.sold:
             self.data.nbLadder += 10
+            self.data.player.RightClickMode = PLAYER_LADDER_MODE
             self.sold = False
 
     def buyPickaxe2(self):
@@ -205,15 +208,16 @@ class Shop(pygame.sprite.Sprite):
         self.buy('dynamiteLvl1')
         if self.sold:
             self.data.nbDynamite += 1
+            self.data.player.RightClickMode = PLAYER_DYNAMITE_MODE
             self.data.player.setStrength()
             self.sold = False
 
-    def buyDynamite2(self):
-        self.buy('dynamiteLvl2')
-        if self.sold:
-            self.data.lvlDynamite += 1
-            self.data.player.setStrength()
-            self.sold = False
+    # def buyDynamite2(self):
+    #     self.buy('dynamiteLvl2')
+    #     if self.sold:
+    #         self.data.lvlDynamite += 1
+    #         self.data.player.setStrength()
+    #         self.sold = False
 
     def doNothing(self):
         pass
