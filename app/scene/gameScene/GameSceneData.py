@@ -9,9 +9,9 @@ import pytmx
 from app.settings import *
 from app.sprites.GUI.HUD import HUD
 from app.sprites.Player import Player
+from app.sprites.WinZone import WinZone
 from app.sprites.Shop import Shop
 from ldLib.tools.TmxData import TmxData
-
 
 class GameSceneData:
     def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld",screenSize=(SCREEN_WIDTH,SCREEN_HEIGHT)):
@@ -83,6 +83,11 @@ class GameSceneData:
         self.shopGroup = pygame.sprite.Group()
         self.shop = Shop(self)
         self.activateShop = False
+
+        #Create WinZone
+        self.winGroup = pygame.sprite.Group()
+        self.winZone = WinZone(self)
+        self.activateWinZone = False
 
         # Player inventory
         self.money = 0
