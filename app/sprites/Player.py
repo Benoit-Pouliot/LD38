@@ -503,12 +503,11 @@ class Player(pygame.sprite.Sprite):
                 dynamite.rect.centerx = x
                 dynamite.rect.centery = y
 
-                col = pygame.sprite.spritecollide(dynamite, self.mapData.springGroup, False)
-                if not col:
-                    self.mapData.allSprites.add(dynamite)
-                    self.mapData.camera.add(dynamite)
-                    self.mapData.nbDynamite -= 1
-                    self.dynamiteCooldown.start()
+                self.mapData.allSprites.add(dynamite)
+                self.mapData.dynamiteGroup.add(dynamite)
+                self.mapData.camera.add(dynamite)
+                self.mapData.nbDynamite -= 1
+                self.dynamiteCooldown.start()
 
     def bounce(self, speed):
         self.speedy = -speed
@@ -687,7 +686,6 @@ class Player(pygame.sprite.Sprite):
     def setStrength(self):
         self.pickaxeStrength = PICKAXE_STRENGTH_LEVEL[self.mapData.lvlPickaxe]
         self.drillStrength = DRILL_STRENGTH_LEVEL[self.mapData.lvlDrill]
-        self.dynamiteStrength = DYNAMITE_STRENGTH_LEVEL[self.mapData.lvlDynamite]
 
     def updateMusic(self):
 
@@ -731,10 +729,6 @@ class Player(pygame.sprite.Sprite):
                 self.downPressed = True
             elif event.key == pygame.K_SPACE:
                 self.jump()
-            elif event.key == pygame.K_c:
-                self.createLadder()
-            elif event.key == pygame.K_v:
-                self.createDynamite()
             elif event.key == pygame.K_1:
                 self.LeftClickMode = PLAYER_DIG_MODE
             elif event.key == pygame.K_2:
@@ -746,7 +740,7 @@ class Player(pygame.sprite.Sprite):
                 if self.mapData.nbSpring is not 0:
                     self.RightClickMode = PLAYER_SPRING_MODE
             elif event.key == pygame.K_5:
-                if self.mapData.lvlDynamite is not 0:
+                if self.mapData.nbDynamite is not 0:
                     self.RightClickMode = PLAYER_DYNAMITE_MODE
             elif event.key == pygame.K_6:
                 if self.mapData.nbAntiGravity is not 0:
@@ -800,14 +794,11 @@ class Player(pygame.sprite.Sprite):
                     self.drillCooldown.start()
         if self.rightMousePressed:
             if self.RightClickMode == PLAYER_DYNAMITE_MODE:
-                # TODO Add method for ladder mode
-                pass
+                self.createDynamite()
             elif self.RightClickMode == PLAYER_LADDER_MODE:
-                # TODO Add method for ladder mode
-                pass
+                self.createLadder()
             elif self.RightClickMode == PLAYER_SPRING_MODE:
                 self.createSpring()
-                pass
             elif self.RightClickMode == PLAYER_ANTI_MODE:
                 # TODO Add method for anti gravity mode
                 pass

@@ -6,6 +6,8 @@ from app.sprites.CollisionMask import CollisionMask
 from ldLib.animation.Animation import Animation
 from ldLib.tools.Cooldown import Cooldown
 from app.settings import *
+from random import randint
+from app.sprites.Explosion import Explosion
 
 class Dynamite(pygame.sprite.Sprite):
     def __init__(self, x, y, mapData):
@@ -27,7 +29,7 @@ class Dynamite(pygame.sprite.Sprite):
 
         self.name = "Dynamite"
 
-        self.isPhysicsApplied = False
+        self.isPhysicsApplied = True
         self.isGravityApplied = True
         self.isFrictionApplied = True
         self.isCollisionApplied = True
@@ -47,7 +49,7 @@ class Dynamite(pygame.sprite.Sprite):
         self.collisionMask.centery = self.rect.centery
 
         self.jumpState = 0
-        self.explosionCooldown = Cooldown(30)
+        self.explosionCooldown = Cooldown(60)
         self.explosionCooldown.start()
 
         self.mapData = mapData
@@ -75,13 +77,24 @@ class Dynamite(pygame.sprite.Sprite):
         if not self.mapData.player.musicMuted:
             self.dictSound['explosion'].play(0)
 
-        for i in range(-1,1):
-            for j in range(-1,1):
-                self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0)
-                self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0, COLLISION_LAYER)
-                self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+        for j in range(-2,3):
+            for i in range(-2,3):
+                if (i == -2 or j == 2 or i == 2 or j == -2):
+                    a = randint(1,3)
+                    if a == 2:
+                        self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0)
+                        self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0, COLLISION_LAYER)
+                        self.mapData.player.destroyRedTile((self.rect.centerx - i * tileWidth)//self.mapData.tmxData.tilewidth, (self.rect.centery - j * tileHeight)//self.mapData.tmxData.tileheight)
+                else:
+                    self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0)
+                    self.mapData.localTmxData.addTileXYToListToChange((self.rect.centerx - i * tileWidth, self.rect.centery - j * tileHeight), 0, COLLISION_LAYER)
+                    self.mapData.player.destroyRedTile((self.rect.centerx - i * tileWidth)//self.mapData.tmxData.tilewidth, (self.rect.centery - j * tileHeight)//self.mapData.tmxData.tileheight)
+
+        self.mapData.localTmxData.changeAllTileInList(self.mapData.cameraPlayer)
+
+        explosion = Explosion(self.rect.midbottom[0], self.rect.midbottom[1], 1)
+
+        self.mapData.camera.add(explosion)
+        self.mapData.allSprites.add(explosion)
 
         self.kill()
-
-
-        pass

@@ -9,9 +9,9 @@ import pytmx
 from app.settings import *
 from app.sprites.GUI.HUD import HUD
 from app.sprites.Player import Player
+from app.sprites.WinZone import WinZone
 from app.sprites.Shop import Shop
 from ldLib.tools.TmxData import TmxData
-
 
 class GameSceneData:
     def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld",screenSize=(SCREEN_WIDTH,SCREEN_HEIGHT)):
@@ -49,6 +49,7 @@ class GameSceneData:
         self.itemGroup = pygame.sprite.Group()
         self.redTileMaskGroup = pygame.sprite.Group()
         self.springGroup = pygame.sprite.Group()
+        self.dynamiteGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
         self.spritesBackGround = pygame.sprite.Group()
 
@@ -83,15 +84,19 @@ class GameSceneData:
         self.shop = Shop(self)
         self.activateShop = False
 
+        #Create WinZone
+        self.winGroup = pygame.sprite.Group()
+        self.winZone = WinZone(self)
+        self.activateWinZone = False
+
         # Player inventory
         self.money = 0
-        self.nbSpring = 200
-        self.nbLadder = 10
+        self.nbSpring = 0
+        self.nbLadder = 0
         self.nbAntiGravity = 0
-        self.nbDynamite = 20
+        self.nbDynamite = 0
         self.lvlPickaxe = 1
         self.lvlDrill = 0
-        self.lvlDynamite = 0
 
         if TAG_MARIE == 1:
             self.money = 100000
@@ -100,7 +105,7 @@ class GameSceneData:
             self.nbAntiGravity = 10
             self.lvlPickaxe = 1
             self.lvlDrill = 1
-            self.lvlDynamite = 1
+
 
         if TAG_BP:
             self.money = 100000
@@ -109,7 +114,6 @@ class GameSceneData:
             self.nbAntiGravity = 100
             self.lvlPickaxe = 1
             self.lvlDrill = 1
-            self.lvlDynamite = 1
 
         self.addHUD()
 

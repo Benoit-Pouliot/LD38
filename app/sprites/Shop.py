@@ -81,7 +81,7 @@ class Shop(pygame.sprite.Sprite):
         self.addUpgrade('drillLvl2', 'drillLvl2-a', self.buyDrill2, DRILL_LVL_COST[2], SHOP_AVAILABLE)
         self.addUpgrade('drillLvl3', 'drillLvl3-a', self.buyDrill3, DRILL_LVL_COST[3], SHOP_AVAILABLE)
 
-        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, DYNAMITE_LVL_COST, SHOP_AVAILABLE)
+        self.addUpgrade('dynamiteLvl1', 'dynamiteLvl1', self.buyDynamite1, DYNAMITE_LVL_COST, SHOP_REPEATABLE)
 
     # Unlock what needs to be unlocked
         self.upgradeList['spring'].unlock = True
@@ -189,7 +189,7 @@ class Shop(pygame.sprite.Sprite):
     def buyDynamite1(self):
         self.buy('dynamiteLvl1')
         if self.sold:
-            self.data.lvlDynamite += 1
+            self.data.nbDynamite += 1
             self.data.player.setStrength()
             self.sold = False
 
