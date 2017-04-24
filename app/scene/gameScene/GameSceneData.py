@@ -49,6 +49,7 @@ class GameSceneData:
         self.itemGroup = pygame.sprite.Group()
         self.redTileMaskGroup = pygame.sprite.Group()
         self.springGroup = pygame.sprite.Group()
+        self.dynamiteGroup = pygame.sprite.Group()
         self.spritesHUD = pygame.sprite.Group()
         self.spritesBackGround = pygame.sprite.Group()
 

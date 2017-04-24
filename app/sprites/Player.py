@@ -482,12 +482,11 @@ class Player(pygame.sprite.Sprite):
                 dynamite.rect.centerx = x
                 dynamite.rect.centery = y
 
-                col = pygame.sprite.spritecollide(dynamite, self.mapData.springGroup, False)
-                if not col:
-                    self.mapData.allSprites.add(dynamite)
-                    self.mapData.camera.add(dynamite)
-                    self.mapData.nbDynamite -= 1
-                    self.dynamiteCooldown.start()
+                self.mapData.allSprites.add(dynamite)
+                self.mapData.dynamiteGroup.add(dynamite)
+                self.mapData.camera.add(dynamite)
+                self.mapData.nbDynamite -= 1
+                self.dynamiteCooldown.start()
 
     def bounce(self, speed):
         self.speedy = -speed
