@@ -99,6 +99,15 @@ class GameSceneData:
             self.nbLadder = 2
             self.nbAntiGravity = 1
 
+        if TAG_BP:
+            self.money = 100000
+            self.nbSpring = 300
+            self.nbLadder = 200
+            self.nbAntiGravity = 100
+            self.lvlPickaxe = 1
+            self.lvlDrill = 1
+            self.lvlDynamite = 1
+
         self.addHUD()
 
     def close(self):
