@@ -42,9 +42,13 @@ class InstructionSceneData:
 
     def createControlBox(self,x,y,width,height):
         self.textGoal = MessageBox(x,y,width,height)
-        self.textGoal.textList.append('PLEASE TEACH ME HOW TO PLAY')
+        self.textGoal.textList.append('Dig down to find the garden treasures.')
+        self.textGoal.textList.append('Unlock items at the shop.')
         self.textGoal.textList.append('')
-        self.textGoal.textList.append('PRETTY PRETTY PLEASE')
+        self.textGoal.textList.append('Press 1, 2, 3, 4, 5, 6 keys to select your item.')
+        self.textGoal.textList.append('Use left and right mouse keys to use them.')
+        self.textGoal.textList.append('')
+        self.textGoal.textList.append('Press m key to mute the game.')
 
 
         self.allSprites.add(self.textGoal)  # Add sprite
