@@ -178,8 +178,8 @@ class Player(pygame.sprite.Sprite):
         self.imageJumpIterWait = 0
 
         self.modifierCMX = 11
-        self.modifierCMY = 8
-        self.collisionMask = CollisionMask(self.rect.x + self.modifierCMX, self.rect.y+self.modifierCMY, self.rect.width-2*self.modifierCMX, self.rect.height-self.modifierCMY)
+        self.modifierCMY = 9
+        self.collisionMask = CollisionMask(self.rect.x + self.modifierCMX, self.rect.y+self.modifierCMY-1, self.rect.width-2*self.modifierCMX, self.rect.height-self.modifierCMY)
 
         # music
         self.musicChanged = True
@@ -400,7 +400,7 @@ class Player(pygame.sprite.Sprite):
 
     def updateCollisionMask(self):
         self.collisionMask.rect.x = self.rect.x+self.modifierCMX
-        self.collisionMask.rect.y = self.rect.y+self.modifierCMY
+        self.collisionMask.rect.y = self.rect.y+self.modifierCMY-1
 
     def updateJumpState(self):
         if self.jumpState == CLIMBING:

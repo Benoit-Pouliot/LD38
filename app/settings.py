@@ -82,7 +82,7 @@ JUMP = 1
 CLIMBING = 2 #When on a ladder
 
 #Physics
-GRAVITY = 0.6
+GRAVITY = 1
 FRICTION = 1
 
 #Projectiles

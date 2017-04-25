@@ -20,9 +20,10 @@ class GameSceneLogicHandler:
         self.applyFriction(self.player)
 
         #self.handleZoneCollision(self.player)
+        self.handleSprings()
         self.collisionChecker.collisionAllSprites(self.player, self.data)
         self.collisionChecker.collisionWithSpring(self.player, self.data.springGroup)
-        self.handleSprings()
+
         self.handleDynamites()
         self.handleZoneCollision(self.player)
         self.checkShop()
@@ -130,7 +131,7 @@ class GameSceneLogicHandler:
     def handleSprings(self):
         for spring in self.data.springGroup.sprites():
             self.applyGravity(spring)
-            self.collisionChecker.collisionAllSprites(spring, self.data)
+            # self.collisionChecker.collisionAllSprites(spring, self.data)
 
     def handleDynamites(self):
         for dynamite in self.data.dynamiteGroup.sprites():

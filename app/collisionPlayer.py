@@ -15,14 +15,19 @@ class CollisionPlayer:
         for sprite in mapData.allSprites:
             if sprite.name == 'player':
                 if player.isPhysicsApplied == True or player.isCollisionApplied == True:
-                    self.rightCollision(player, mapData)
-                    self.leftCollision(player, mapData)
-                    self.downCollision(player, mapData)
-                    self.upCollision(player, mapData)
+                    self.rightCollision(sprite, mapData)
+                    self.leftCollision(sprite, mapData)
+                    self.downCollision(sprite, mapData)
+                    self.upCollision(sprite, mapData)
 
                     self.dealWithStuck(player, mapData)
             elif sprite.name == 'seller':
                 if sprite.isPhysicsApplied == True or sprite.isCollisionApplied == True:
+                    self.rightCollision(sprite, mapData)
+                    self.leftCollision(sprite, mapData)
+                    self.downCollision(sprite, mapData)
+                    self.upCollision(sprite, mapData)
+            elif sprite.name == 'Spring':
                     self.rightCollision(sprite, mapData)
                     self.leftCollision(sprite, mapData)
                     self.downCollision(sprite, mapData)
