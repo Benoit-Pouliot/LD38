@@ -800,6 +800,5 @@ class Player(pygame.sprite.Sprite):
             elif self.RightClickMode == PLAYER_SPRING_MODE:
                 self.createSpring()
             elif self.RightClickMode == PLAYER_ANTI_MODE:
-                # TODO Add method for anti gravity mode
                 pass
 
