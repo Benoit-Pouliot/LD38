@@ -197,7 +197,12 @@ class CollisionPlayer:
             if player.jumpState != CLIMBING and player.name == "player":
                 player.jumpState = CLIMBING
                 player.speedx = 0
-                # player.speedy = 0
+                downLeftTileGid = map.tmxData.get_tile_gid((player.collisionMask.rect.left+1)/tileWidth, (player.collisionMask.rect.bottom + player.speedy)/tileHeight, COLLISION_LAYER)
+                downRightTileGid = map.tmxData.get_tile_gid((player.collisionMask.rect.right)/tileWidth, (player.collisionMask.rect.bottom + player.speedy)/tileHeight, COLLISION_LAYER)
+                downMidTileGID = map.tmxData.get_tile_gid((player.collisionMask.rect.centerx)/tileWidth, (player.collisionMask.rect.bottom + player.speedy)/tileHeight, COLLISION_LAYER)
+                if downMidTileGID != self.map.ladderGID:
+                    player.collisionMask.rect.y -= 10
+                    player.rect.y -= 10
         else:
             if player.jumpState == CLIMBING:
                 player.jumpState = JUMP
