@@ -31,7 +31,7 @@ class GameSceneLogicHandler:
         self.data.allSprites.update()
         self.data.spritesHUD.update()
         self.applyGravity(self.data.player)
-        self.applyGravity(self.data.player)
+        self.applyGravity(self.data.seller)
 
         # self.handleSpriteTileCollision(self.player, self.data)
 

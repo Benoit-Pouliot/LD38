@@ -45,12 +45,12 @@ class InstructionSceneData:
         self.textGoal.textList.append('Dig down to find the garden treasures.')
         self.textGoal.textList.append('Unlock items at the shop.')
         self.textGoal.textList.append('')
-        self.textGoal.textList.append('Press 1, 2, 3, 4, 5, 6 keys to select your item.')
+        self.textGoal.textList.append('Press 1, 2, 3, 4 or 5 to select your item.')
         self.textGoal.textList.append('Use left and right mouse keys to use them.')
         self.textGoal.textList.append('')
-        self.textGoal.textList.append('Press m key to mute the game.')
+        self.textGoal.textList.append('Press m to mute the game.')
         self.textGoal.textList.append('')
-        self.textGoal.textList.append('Make sure to buy some ladders so you won\'t get stuck!')
+        self.textGoal.textList.append('Always buy some ladders so you won\'t get stuck!')
 
 
         self.allSprites.add(self.textGoal)  # Add sprite
