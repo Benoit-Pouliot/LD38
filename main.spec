@@ -15,7 +15,7 @@ block_cipher = None
 addedFiles = [ ('tiles_map', 'tiles_map'), ('music','music'), ('img', 'img') ]
 
 a = Analysis(['main.py'],
-             pathex=['LD37'],
+             pathex=['LD38'],
              binaries=None,
              datas=addedFiles,
              hiddenimports=[],
