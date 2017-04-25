@@ -30,7 +30,8 @@ class GameSceneLogicHandler:
         self.checkHighlight()
         self.data.allSprites.update()
         self.data.spritesHUD.update()
-        self.applyGravity(self.data.allSprites)
+        self.applyGravity(self.data.player)
+        self.applyGravity(self.data.player)
 
         # self.handleSpriteTileCollision(self.player, self.data)
 
@@ -69,10 +70,9 @@ class GameSceneLogicHandler:
         else:
            return False
 
-    def applyGravity(self, allSprites):
-        for sprite in allSprites:
-            if sprite.isPhysicsApplied == True or sprite.isGravityApplied == True:
-                sprite.speedy += GRAVITY
+    def applyGravity(self, sprite):
+                if sprite.isPhysicsApplied == True or sprite.isGravityApplied == True:
+                    sprite.speedy += GRAVITY
 
     def applyFriction(self, sprite):
         if sprite.isPhysicsApplied == True or sprite.isFrictionApplied == True:
@@ -118,12 +118,14 @@ class GameSceneLogicHandler:
 
     def checkWinZone(self):
         if self.data.activateWinMsg:
-            for sprites in self.data.winGroup:
+            for sprites in self.data.winGroup.sprites():
                 self.data.spritesHUD.add(sprites)
+            self.data.camera.add(self.data.heart)
         else:
-            for sprites in self.data.winGroup:
+            for sprites in self.data.winGroup.sprites():
                 if self.data.spritesHUD.has(sprites):
                     self.data.spritesHUD.remove(sprites)
+            self.data.camera.remove(self.data.heart)
 
     def handleSprings(self):
         for spring in self.data.springGroup.sprites():
@@ -134,3 +136,4 @@ class GameSceneLogicHandler:
         for dynamite in self.data.dynamiteGroup.sprites():
             self.applyGravity(dynamite)
             self.collisionChecker.collisionAllSprites(dynamite, self.data)
+

@@ -12,7 +12,9 @@ from app.sprites.Player import Player
 from app.sprites.Seller import Seller
 from app.sprites.WinZone import WinZone
 from app.sprites.Shop import Shop
+from app.sprites.Heart import Heart
 from ldLib.tools.TmxData import TmxData
+from app.sprites.Woman import Woman
 
 class GameSceneData:
     def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld",screenSize=(SCREEN_WIDTH,SCREEN_HEIGHT)):
@@ -78,6 +80,10 @@ class GameSceneData:
         self.camera.add(self.allSprites)
 
         self.player = Player(self.spawmPointPlayerx, self.spawmPointPlayery, self)
+        self.woman = Woman(59*self.tmxData.tilewidth, 107*self.tmxData.tileheight)
+        self.camera.add(self.woman)
+
+
 
         self.allSprites.add(self.player)
         self.notifySet.add(self.player)
@@ -95,6 +101,10 @@ class GameSceneData:
         self.winZone = WinZone(self)
         self.activateWinZone = False
 
+        self.heart = Heart(59.25*self.tmxData.tilewidth, 106.3*self.tmxData.tileheight)
+        self.camera.add(self.heart)
+        self.winGroup.add(self.heart)
+
         # Player inventory
         self.money = 0
         self.nbSpring = 0
@@ -111,6 +121,7 @@ class GameSceneData:
             self.nbAntiGravity = 10
             self.lvlPickaxe = 1
             self.lvlDrill = 0
+            self.player.setStrength()
 
 
         if TAG_BP:
@@ -120,6 +131,16 @@ class GameSceneData:
             self.nbAntiGravity = 100
             self.lvlPickaxe = 1
             self.lvlDrill = 1
+
+        if TAG_PHIL:
+            self.money = 10000
+            self.nbSpring = 10
+            self.nbLadder = 10
+            self.nbAntiGravity = 10
+            self.lvlPickaxe = 1
+            self.lvlDrill = 0
+            self.player.setStrength()
+
 
         self.addHUD()
 
@@ -140,23 +161,23 @@ class GameSceneData:
     def tileTypeToTileLife(self, tileType):
         #return TileLife(1)
         if tileType == 53: #Dirt
-            return TileLife(5)
+            return TileLife(TILE_DIRT)
         elif tileType == 51 or tileType == 57: #Gold in dirt
-            return TileLife(6)
+            return TileLife(TILE_DIRT_GOLD)
         elif tileType == 52 or tileType == 58: #Pink gold in dirt
-            return TileLife(8)
+            return TileLife(TILE_DIRT_PINK)
         elif tileType == 63: #Rock
-            return TileLife(10)
+            return TileLife(TILE_ROCK)
         elif tileType == 59 or tileType == 77: #Pink gold in rock
-            return TileLife(12)
+            return TileLife(TILE_ROCK_PINK)
         elif tileType == 65 or tileType == 71: #Topaze in rock
-            return TileLife(16)
+            return TileLife(TILE_ROCK_GREEN)
         elif tileType == 69: #Blue rock
-            return TileLife(20)
+            return TileLife(TILE_BLUE)
         elif tileType == 70 or tileType == 75: #Topaze in blue rock
-            return TileLife(24)
+            return TileLife(TILE_BLUE_GREEN)
         elif tileType == 76 or tileType == 81: #Red diamond in blue rock
-            return TileLife(32)
+            return TileLife(TILE_BLUE_RED)
         else:
             return TileLife(1)
 

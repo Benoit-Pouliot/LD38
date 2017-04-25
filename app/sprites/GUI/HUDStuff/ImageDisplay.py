@@ -16,7 +16,8 @@ class ImageDisplay():
 
         self.printedLine = self.font.render(self.statName, True, self.textColor)
 
-        self.icon = pygame.image.load(os.path.join('img', imageName + '.png'))
+        self.iconName = imageName
+        self.icon = pygame.image.load(os.path.join('img', self.iconName + '.png'))
         self.iconPos = (0,0)
         self.setIcon()
         self.isSelected = False
@@ -33,7 +34,9 @@ class ImageDisplay():
         self.iconPos = (self.position[0]+self.printedLine.get_width(),self.position[1])
 
     def display(self,imageName = 'pig'):
-        self.icon = pygame.image.load(os.path.join('img', imageName + '.png'))
-        self.setIcon()
+        if imageName != self.iconName:
+            self.iconName=imageName
+            self.icon = pygame.image.load(os.path.join('img', self.iconName + '.png'))
+            self.setIcon()
         self.background.blit(self.printedLine, self.position)
         self.background.blit(self.icon, self.iconPos)
