@@ -138,7 +138,7 @@ class Shop(pygame.sprite.Sprite):
     def buySpring(self):
         self.buy('spring')
         if self.sold:
-            self.data.nbSpring += 1
+            self.data.nbSpring += 3
             self.data.player.RightClickMode = PLAYER_SPRING_MODE
             self.sold = False
 
