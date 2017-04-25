@@ -8,7 +8,7 @@
 
 block_cipher = None
 
-addedFiles = [ ('tiles_map', 'tiles_map'), ('music_pcm','music_pcm'), ('img', 'img')]
+addedFiles = [ ('tiles_map', 'tiles_map'), ('music','music'), ('img', 'img')]
 
 a = Analysis(['main.py'],
              #pathex=['LD36'],
