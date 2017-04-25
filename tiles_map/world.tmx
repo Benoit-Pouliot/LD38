@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="110" tilewidth="32" tileheight="32" nextobjectid="8">
- <tileset firstgid="1" name="collision_set" tilewidth="32" tileheight="32" tilecount="50" columns="5">
+ <tileset firstgid="1" name="collision_set" tilewidth="32" tileheight="32" tilecount="50">
   <image source="img/collision_set.png" width="160" height="320"/>
  </tileset>
- <tileset firstgid="51" name="terain_set" tilewidth="32" tileheight="32" tilecount="36" columns="6">
+ <tileset firstgid="51" name="terain_set" tilewidth="32" tileheight="32" tilecount="36">
   <image source="img/TilesBase.png" width="192" height="192"/>
  </tileset>
- <tileset firstgid="87" name="GrassBackground" tilewidth="32" tileheight="32" tilecount="18" columns="6">
+ <tileset firstgid="87" name="GrassBackground" tilewidth="32" tileheight="32" tilecount="18">
   <image source="img/Grass.png" width="211" height="97"/>
  </tileset>
- <tileset firstgid="105" name="Vase" tilewidth="32" tileheight="32" tilecount="896" columns="32">
+ <tileset firstgid="105" name="Vase" tilewidth="32" tileheight="32" tilecount="896">
   <image source="img/Vase.png" width="1024" height="896"/>
  </tileset>
- <tileset firstgid="1001" name="Pipe" tilewidth="32" tileheight="32" tilecount="6" columns="2">
+ <tileset firstgid="1001" name="Pipe" tilewidth="32" tileheight="32" tilecount="6">
   <image source="img/Pipe.png" width="64" height="96"/>
  </tileset>
- <tileset firstgid="1007" name="Tree" tilewidth="32" tileheight="32" tilecount="1386" columns="63">
+ <tileset firstgid="1007" name="Tree" tilewidth="32" tileheight="32" tilecount="1386">
   <image source="img/Tree.png" width="2016" height="704"/>
  </tileset>
- <tileset firstgid="2393" name="PoissonBackground" tilewidth="32" tileheight="32" tilecount="405" columns="27">
+ <tileset firstgid="2393" name="PoissonBackground" tilewidth="32" tileheight="32" tilecount="405">
   <image source="img/Poisson.png" width="864" height="480"/>
  </tileset>
  <layer name="Collision_TL" width="80" height="110">

@@ -118,12 +118,14 @@ class GameSceneLogicHandler:
 
     def checkWinZone(self):
         if self.data.activateWinMsg:
-            for sprites in self.data.winGroup:
+            for sprites in self.data.winGroup.sprites():
                 self.data.spritesHUD.add(sprites)
+            self.data.camera.add(self.data.heart)
         else:
-            for sprites in self.data.winGroup:
+            for sprites in self.data.winGroup.sprites():
                 if self.data.spritesHUD.has(sprites):
                     self.data.spritesHUD.remove(sprites)
+            self.data.camera.remove(self.data.heart)
 
     def handleSprings(self):
         for spring in self.data.springGroup.sprites():
@@ -134,3 +136,4 @@ class GameSceneLogicHandler:
         for dynamite in self.data.dynamiteGroup.sprites():
             self.applyGravity(dynamite)
             self.collisionChecker.collisionAllSprites(dynamite, self.data)
+

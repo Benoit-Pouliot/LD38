@@ -12,7 +12,9 @@ from app.sprites.Player import Player
 from app.sprites.Seller import Seller
 from app.sprites.WinZone import WinZone
 from app.sprites.Shop import Shop
+from app.sprites.Heart import Heart
 from ldLib.tools.TmxData import TmxData
+from app.sprites.Woman import Woman
 
 class GameSceneData:
     def __init__(self,mapName="WorldMap", nameInZone="StartPointWorld",screenSize=(SCREEN_WIDTH,SCREEN_HEIGHT)):
@@ -78,6 +80,10 @@ class GameSceneData:
         self.camera.add(self.allSprites)
 
         self.player = Player(self.spawmPointPlayerx, self.spawmPointPlayery, self)
+        self.woman = Woman(59*self.tmxData.tilewidth, 107*self.tmxData.tileheight)
+        self.camera.add(self.woman)
+
+
 
         self.allSprites.add(self.player)
         self.notifySet.add(self.player)
@@ -94,6 +100,10 @@ class GameSceneData:
         self.winGroup = pygame.sprite.Group()
         self.winZone = WinZone(self)
         self.activateWinZone = False
+
+        self.heart = Heart(59.25*self.tmxData.tilewidth, 106.3*self.tmxData.tileheight)
+        self.camera.add(self.heart)
+        self.winGroup.add(self.heart)
 
         # Player inventory
         self.money = 0
@@ -121,6 +131,16 @@ class GameSceneData:
             self.nbAntiGravity = 100
             self.lvlPickaxe = 1
             self.lvlDrill = 1
+
+        if TAG_PHIL:
+            self.money = 10000
+            self.nbSpring = 10
+            self.nbLadder = 10
+            self.nbAntiGravity = 10
+            self.lvlPickaxe = 1
+            self.lvlDrill = 0
+            self.player.setStrength()
+
 
         self.addHUD()
 

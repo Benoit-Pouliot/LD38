@@ -3,6 +3,7 @@ import pygame
 
 from app.settings import *
 from ldLib.GUI.messageBox.MessageBox import MessageBox
+from app.sprites.Heart import Heart
 
 class WinZone(pygame.sprite.Sprite):
     def __init__(self,data):
@@ -18,8 +19,9 @@ class WinZone(pygame.sprite.Sprite):
 
         self.mapData = data
 
-        message = 'You got to the bottom! You win the game!'
-        self.createWinBox(SCREEN_WIDTH/2-200, SCREEN_HEIGHT/2-150, 400, 100, message)
+        message = 'You found the most precious gem of all'
+        self.createWinBox(SCREEN_WIDTH/2-200, SCREEN_HEIGHT/2-150, 400, 150, message)
+
 
     def update(self):
         pass
@@ -27,7 +29,13 @@ class WinZone(pygame.sprite.Sprite):
     def createWinBox(self,x,y,width,height, message):
         self.textWin = MessageBox(x,y,width,height)
         self.textWin.textList.append(message)
+        self.textWin.textList.append("")
+        self.textWin.textList.append("YOU WIN")
+        self.textWin.textList.append("")
+        self.textWin.textList.append("You can now continue mining at your leisure")
         self.textWin.isPhysicsApplied = False
         self.textWin.isCollisionApplied = False
 
         self.mapData.winGroup.add(self.textWin)
+
+
